@@ -6,168 +6,144 @@
   <title>Geographic Call Map</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     body {
-      background: #f5f8fc;
+      background: #f2f6fa;
       color: #1a2a3a;
       font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      min-height: 100vh;
     }
 
-    /* ── Header ──────────────────────────────── */
+    /* ── Header ────────────────────────────────── */
     .header {
-      display: flex;
-      align-items: flex-end;
+      display: flex; align-items: flex-end;
       justify-content: space-between;
       padding: 18px 32px 14px;
-      background: #ffffff;
-      border-bottom: 1px solid #dde8f0;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      background: #fff;
+      border-bottom: 1px solid #dce8f2;
+      box-shadow: 0 1px 4px rgba(0,0,0,.06);
     }
     .header h1 {
-      font-size: 20px;
-      font-weight: 400;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: #1a3a58;
+      font-size: 19px; font-weight: 400;
+      letter-spacing: 3px; text-transform: uppercase; color: #1a3a58;
     }
-    .header .sub {
-      font-size: 11px;
-      color: #7a9ab8;
-      margin-top: 4px;
-      letter-spacing: 0.5px;
-    }
+    .header .sub { font-size: 11px; color: #7a9ab8; margin-top: 4px; }
     .kpis { display: flex; gap: 28px; }
     .kpi  { text-align: right; }
-    .kpi-v {
-      font-size: 28px;
-      font-weight: 300;
-      color: #1a3a58;
-      line-height: 1;
+    .kpi-v { font-size: 28px; font-weight: 300; color: #1a3a58; line-height: 1; }
+    .kpi-l { font-size: 9px; text-transform: uppercase; letter-spacing: 1.5px; color: #7a9ab8; margin-top: 3px; }
+
+    /* ── Filter Bar ─────────────────────────────── */
+    .filter-bar {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 32px;
+      background: #fff;
+      border-bottom: 1px solid #dce8f2;
     }
-    .kpi-l {
-      font-size: 9px;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      color: #7a9ab8;
-      margin-top: 3px;
+    .filter-label {
+      font-size: 10px; text-transform: uppercase;
+      letter-spacing: 1.5px; color: #9ab8d0; margin-right: 4px; white-space: nowrap;
+    }
+    .sf {
+      padding: 5px 14px; border-radius: 20px;
+      border: 1.5px solid #d0e0ee;
+      background: transparent; color: #5a7a98;
+      font-size: 11px; font-weight: 500; cursor: pointer;
+      transition: all .18s; letter-spacing: .5px;
+      white-space: nowrap;
+    }
+    .sf:hover { background: #f0f6fc; }
+    .sf.active {
+      color: #fff;
+      border-color: var(--sc);
+      background: var(--sc);
+    }
+    .sf-count {
+      display: inline-block; margin-left: 5px;
+      font-size: 9px; opacity: .75;
     }
 
-    /* ── Map ─────────────────────────────────── */
+    /* ── Map ────────────────────────────────────── */
     #map-wrap {
-      position: relative;
-      width: 100%;
-      height: 590px;
-      background: #dce8f4;
-      overflow: hidden;
+      position: relative; width: 100%; height: 580px;
+      background: #d0e4f2; overflow: hidden;
     }
     #map-wrap svg { display: block; position: absolute; top: 0; left: 0; }
 
-    /* ── Map legend ──────────────────────────── */
+    /* ── Map Legend ─────────────────────────────── */
     .map-legend {
-      position: absolute;
-      top: 18px; right: 22px;
-      background: rgba(255,255,255,0.94);
-      border: 1px solid #dde8f0;
-      border-radius: 6px;
-      padding: 14px 16px;
-      min-width: 240px;
+      position: absolute; top: 16px; right: 20px;
+      background: rgba(255,255,255,.93);
+      border: 1px solid #dce8f2; border-radius: 6px;
+      padding: 13px 15px; min-width: 238px;
       backdrop-filter: blur(8px);
-      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-      z-index: 10;
+      box-shadow: 0 2px 12px rgba(0,0,0,.08); z-index: 10;
     }
     .map-legend h3 {
-      font-size: 9px;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      color: #7a9ab8;
-      margin-bottom: 12px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid #e8f0f8;
+      font-size: 9px; text-transform: uppercase;
+      letter-spacing: 2px; color: #7a9ab8;
+      margin-bottom: 11px; padding-bottom: 7px;
+      border-bottom: 1px solid #e6f0f8;
     }
-    .leg-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 9px;
-    }
-    .leg-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
-    .leg-info { flex: 1; min-width: 0; }
+    .leg-row { display: flex; align-items: center; gap: 9px; margin-bottom: 9px; }
+    .leg-dot  { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+    .leg-info { flex: 1; }
     .leg-city { font-size: 12px; color: #1a2a3a; }
     .leg-num  { font-size: 10px; color: #7a9ab8; font-family: monospace; }
     .leg-cnt  { font-size: 11px; color: #5a7a98; text-align: right; }
     .leg-wt   { font-size: 9px; color: #9ab8d0; }
 
     .origin-hint {
-      position: absolute;
-      bottom: 16px; left: 22px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(255,255,255,0.88);
-      border: 1px solid #dde8f0;
-      border-radius: 4px;
-      padding: 6px 12px;
-      font-size: 10px;
-      color: #5a7a98;
-      z-index: 10;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      position: absolute; bottom: 14px; left: 20px;
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,.88);
+      border: 1px solid #dce8f2; border-radius: 4px;
+      padding: 6px 12px; font-size: 10px; color: #5a7a98;
+      box-shadow: 0 1px 4px rgba(0,0,0,.06); z-index: 10;
     }
     .oh-dot {
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      background: #6a9ab8;
-      border: 1px solid #3a6a8a;
-      flex-shrink: 0;
+      width: 7px; height: 7px; border-radius: 50%;
+      background: #6a9ab8; border: 1px solid #3a6a8a; flex-shrink: 0;
     }
 
-    /* ── Stats ───────────────────────────────── */
+    /* active state badge on map */
+    .state-badge {
+      position: absolute; bottom: 14px; right: 20px;
+      background: rgba(255,255,255,.93);
+      border: 1.5px solid #dce8f2; border-radius: 4px;
+      padding: 5px 14px; font-size: 12px; font-weight: 500;
+      color: #1a3a58; z-index: 10; display: none;
+    }
+
+    /* ── Stats ──────────────────────────────────── */
     .stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      border-top: 1px solid #dde8f0;
-      background: #eaf2f8;
-      gap: 1px;
+      display: grid; grid-template-columns: 1fr 1fr;
+      border-top: 1px solid #dce8f2; gap: 1px; background: #dce8f2;
     }
-    .sp {
-      padding: 20px 28px 24px;
-      background: #ffffff;
-    }
+    .sp { padding: 20px 28px 24px; background: #fff; }
     .sp h2 {
-      font-size: 9px;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      color: #7a9ab8;
-      margin-bottom: 14px;
+      font-size: 9px; text-transform: uppercase;
+      letter-spacing: 2px; color: #7a9ab8; margin-bottom: 14px;
     }
     table { width: 100%; border-collapse: collapse; }
     th {
-      font-size: 9px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: #9ab8d0;
-      font-weight: 400;
-      padding: 0 8px 8px;
-      text-align: left;
-      border-bottom: 1px solid #e8f0f8;
+      font-size: 9px; text-transform: uppercase;
+      letter-spacing: 1px; color: #9ab8d0; font-weight: 400;
+      padding: 0 8px 8px; text-align: left; border-bottom: 1px solid #e8f2f8;
     }
     td {
-      padding: 8px 8px;
-      font-size: 13px;
-      color: #2a4a62;
-      border-bottom: 1px solid #f0f5fa;
-      vertical-align: middle;
+      padding: 8px 8px; font-size: 13px; color: #2a4a62;
+      border-bottom: 1px solid #f0f6fc; vertical-align: middle;
     }
     tr:last-child td { border-bottom: none; }
-    .bar-wrap { display: flex; align-items: center; gap: 8px; }
-    .bar-bg { flex: 1; height: 3px; background: #e0eaf4; border-radius: 2px; overflow: hidden; }
-    .bar-fill { height: 3px; border-radius: 2px; }
-    .pct { font-size: 11px; color: #7a9ab8; width: 36px; text-align: right; flex-shrink: 0; }
-    .swatch {
-      display: inline-block; width: 8px; height: 8px;
-      border-radius: 50%; margin-right: 6px; vertical-align: middle;
+    .bar-wrap  { display: flex; align-items: center; gap: 8px; }
+    .bar-bg    { flex: 1; height: 3px; background: #e0eaf4; border-radius: 2px; overflow: hidden; }
+    .bar-fill  { height: 3px; border-radius: 2px; }
+    .pct       { font-size: 11px; color: #7a9ab8; width: 36px; text-align: right; flex-shrink: 0; }
+    .swatch    { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+    .mono      { font-family: monospace; font-size: 11px; color: #7a9ab8; }
+    .state-tag {
+      display: inline-block; padding: 1px 6px; border-radius: 10px;
+      font-size: 9px; font-weight: 600; color: #fff; margin-right: 5px; vertical-align: middle;
     }
-    .mono { font-family: monospace; font-size: 11px; color: #7a9ab8; }
   </style>
 </head>
 <body>
@@ -180,278 +156,276 @@
   <div class="kpis" id="kpis"></div>
 </div>
 
+<div class="filter-bar" id="filter-bar">
+  <span class="filter-label">State Filter</span>
+</div>
+
 <div id="map-wrap">
   <div class="map-legend">
     <h3>Answering Points</h3>
     <div id="leg"></div>
   </div>
-  <div class="origin-hint">
-    <div class="oh-dot"></div>
-    Origin state &nbsp;·&nbsp; size = call volume
-  </div>
+  <div class="origin-hint"><div class="oh-dot"></div>Origin city · size = call volume</div>
+  <div class="state-badge" id="state-badge"></div>
 </div>
 
 <div class="stats">
-  <div class="sp">
-    <h2>Calls by Origin State</h2>
-    <table id="t-orig"></table>
-  </div>
-  <div class="sp">
-    <h2>Calls by Answering Point</h2>
-    <table id="t-dest"></table>
-  </div>
+  <div class="sp"><h2 id="orig-title">Calls by Origin City</h2><table id="t-orig"></table></div>
+  <div class="sp"><h2>Calls by Answering Point</h2><table id="t-dest"></table></div>
 </div>
 
 <script>
-const DATA = {"flows": [{"origin": "NSW", "origin_name": "New South Wales", "olat": -32.1656, "olon": 147.0178, "dest_number": "02 9876 1234", "dest_city": "Sydney", "dlat": -33.8688, "dlon": 151.2093, "color": "#EF476F", "count": 18}, {"origin": "OTHERS", "origin_name": "Other Regions", "olat": -25.2744, "olon": 133.7751, "dest_number": "02 9876 1234", "dest_city": "Sydney", "dlat": -33.8688, "dlon": 151.2093, "color": "#EF476F", "count": 16}, {"origin": "NSW", "origin_name": "New South Wales", "olat": -32.1656, "olon": 147.0178, "dest_number": "07 5645 7312", "dest_city": "Gold Coast", "dlat": -28.0167, "dlon": 153.4, "color": "#FFD166", "count": 16}, {"origin": "NSW", "origin_name": "New South Wales", "olat": -32.1656, "olon": 147.0178, "dest_number": "03 9763 1223", "dest_city": "Melbourne", "dlat": -37.8136, "dlon": 144.9631, "color": "#118AB2", "count": 15}, {"origin": "NSW", "origin_name": "New South Wales", "olat": -32.1656, "olon": 147.0178, "dest_number": "08 9498 1234", "dest_city": "Perth", "dlat": -31.9505, "dlon": 115.8605, "color": "#FF6B35", "count": 14}, {"origin": "QLD", "origin_name": "Queensland", "olat": -22.5751, "olon": 144.0851, "dest_number": "03 9763 1223", "dest_city": "Melbourne", "dlat": -37.8136, "dlon": 144.9631, "color": "#118AB2", "count": 13}, {"origin": "VIC", "origin_name": "Victoria", "olat": -37.0207, "olon": 144.9643, "dest_number": "02 9876 1234", "dest_city": "Sydney", "dlat": -33.8688, "dlon": 151.2093, "color": "#EF476F", "count": 13}, {"origin": "OTHERS", "origin_name": "Other Regions", "olat": -25.2744, "olon": 133.7751, "dest_number": "03 9763 1223", "dest_city": "Melbourne", "dlat": -37.8136, "dlon": 144.9631, "color": "#118AB2", "count": 11}, {"origin": "OTHERS", "origin_name": "Other Regions", "olat": -25.2744, "olon": 133.7751, "dest_number": "08 9498 1234", "dest_city": "Perth", "dlat": -31.9505, "dlon": 115.8605, "color": "#FF6B35", "count": 9}, {"origin": "NSW", "origin_name": "New South Wales", "olat": -32.1656, "olon": 147.0178, "dest_number": "07 3345 6798", "dest_city": "Brisbane", "dlat": -27.4698, "dlon": 153.0251, "color": "#06D6A0", "count": 9}, {"origin": "OTHERS", "origin_name": "Other Regions", "olat": -25.2744, "olon": 133.7751, "dest_number": "07 5645 7312", "dest_city": "Gold Coast", "dlat": -28.0167, "dlon": 153.4, "color": "#FFD166", "count": 9}, {"origin": "VIC", "origin_name": "Victoria", "olat": -37.0207, "olon": 144.9643, "dest_number": "07 5645 7312", "dest_city": "Gold Coast", "dlat": -28.0167, "dlon": 153.4, "color": "#FFD166", "count": 8}, {"origin": "VIC", "origin_name": "Victoria", "olat": -37.0207, "olon": 144.9643, "dest_number": "03 9763 1223", "dest_city": "Melbourne", "dlat": -37.8136, "dlon": 144.9631, "color": "#118AB2", "count": 7}, {"origin": "VIC", "origin_name": "Victoria", "olat": -37.0207, "olon": 144.9643, "dest_number": "08 9498 1234", "dest_city": "Perth", "dlat": -31.9505, "dlon": 115.8605, "color": "#FF6B35", "count": 7}, {"origin": "QLD", "origin_name": "Queensland", "olat": -22.5751, "olon": 144.0851, "dest_number": "07 5645 7312", "dest_city": "Gold Coast", "dlat": -28.0167, "dlon": 153.4, "color": "#FFD166", "count": 6}, {"origin": "QLD", "origin_name": "Queensland", "olat": -22.5751, "olon": 144.0851, "dest_number": "02 9876 1234", "dest_city": "Sydney", "dlat": -33.8688, "dlon": 151.2093, "color": "#EF476F", "count": 6}, {"origin": "QLD", "origin_name": "Queensland", "olat": -22.5751, "olon": 144.0851, "dest_number": "08 9498 1234", "dest_city": "Perth", "dlat": -31.9505, "dlon": 115.8605, "color": "#FF6B35", "count": 4}, {"origin": "OTHERS", "origin_name": "Other Regions", "olat": -25.2744, "olon": 133.7751, "dest_number": "07 3345 6798", "dest_city": "Brisbane", "dlat": -27.4698, "dlon": 153.0251, "color": "#06D6A0", "count": 4}, {"origin": "VIC", "origin_name": "Victoria", "olat": -37.0207, "olon": 144.9643, "dest_number": "07 3345 6798", "dest_city": "Brisbane", "dlat": -27.4698, "dlon": 153.0251, "color": "#06D6A0", "count": 4}, {"origin": "TAS", "origin_name": "Tasmania", "olat": -42.0397, "olon": 146.8088, "dest_number": "08 9498 1234", "dest_city": "Perth", "dlat": -31.9505, "dlon": 115.8605, "color": "#FF6B35", "count": 2}, {"origin": "SA", "origin_name": "South Australia", "olat": -30.0002, "olon": 136.2092, "dest_number": "07 5645 7312", "dest_city": "Gold Coast", "dlat": -28.0167, "dlon": 153.4, "color": "#FFD166", "count": 2}, {"origin": "TAS", "origin_name": "Tasmania", "olat": -42.0397, "olon": 146.8088, "dest_number": "02 9876 1234", "dest_city": "Sydney", "dlat": -33.8688, "dlon": 151.2093, "color": "#EF476F", "count": 2}, {"origin": "WA", "origin_name": "Western Australia", "olat": -25.3284, "olon": 122.2257, "dest_number": "02 9876 1234", "dest_city": "Sydney", "dlat": -33.8688, "dlon": 151.2093, "color": "#EF476F", "count": 2}, {"origin": "SA", "origin_name": "South Australia", "olat": -30.0002, "olon": 136.2092, "dest_number": "02 9876 1234", "dest_city": "Sydney", "dlat": -33.8688, "dlon": 151.2093, "color": "#EF476F", "count": 1}, {"origin": "SA", "origin_name": "South Australia", "olat": -30.0002, "olon": 136.2092, "dest_number": "03 9763 1223", "dest_city": "Melbourne", "dlat": -37.8136, "dlon": 144.9631, "color": "#118AB2", "count": 1}, {"origin": "WA", "origin_name": "Western Australia", "olat": -25.3284, "olon": 122.2257, "dest_number": "08 9498 1234", "dest_city": "Perth", "dlat": -31.9505, "dlon": 115.8605, "color": "#FF6B35", "count": 1}, {"origin": "SA", "origin_name": "South Australia", "olat": -30.0002, "olon": 136.2092, "dest_number": "08 9498 1234", "dest_city": "Perth", "dlat": -31.9505, "dlon": 115.8605, "color": "#FF6B35", "count": 1}, {"origin": "WA", "origin_name": "Western Australia", "olat": -25.3284, "olon": 122.2257, "dest_number": "03 9763 1223", "dest_city": "Melbourne", "dlat": -37.8136, "dlon": 144.9631, "color": "#118AB2", "count": 1}, {"origin": "QLD", "origin_name": "Queensland", "olat": -22.5751, "olon": 144.0851, "dest_number": "07 3345 6798", "dest_city": "Brisbane", "dlat": -27.4698, "dlon": 153.0251, "color": "#06D6A0", "count": 1}], "origins": [{"state": "NSW", "name": "New South Wales", "lat": -32.1656, "lon": 147.0178, "count": 72}, {"state": "OTHERS", "name": "Other Regions", "lat": -25.2744, "lon": 133.7751, "count": 49}, {"state": "VIC", "name": "Victoria", "lat": -37.0207, "lon": 144.9643, "count": 39}, {"state": "QLD", "name": "Queensland", "lat": -22.5751, "lon": 144.0851, "count": 30}, {"state": "SA", "name": "South Australia", "lat": -30.0002, "lon": 136.2092, "count": 5}, {"state": "TAS", "name": "Tasmania", "lat": -42.0397, "lon": 146.8088, "count": 4}, {"state": "WA", "name": "Western Australia", "lat": -25.3284, "lon": 122.2257, "count": 4}], "destinations": [{"number": "08 9498 1234", "city": "Perth", "lat": -31.9505, "lon": 115.8605, "weight": 0.2, "color": "#FF6B35", "count": 38}, {"number": "07 5645 7312", "city": "Gold Coast", "lat": -28.0167, "lon": 153.4, "weight": 0.15, "color": "#FFD166", "count": 41}, {"number": "07 3345 6798", "city": "Brisbane", "lat": -27.4698, "lon": 153.0251, "weight": 0.1, "color": "#06D6A0", "count": 18}, {"number": "03 9763 1223", "city": "Melbourne", "lat": -37.8136, "lon": 144.9631, "weight": 0.25, "color": "#118AB2", "count": 48}, {"number": "02 9876 1234", "city": "Sydney", "lat": -33.8688, "lon": 151.2093, "weight": 0.3, "color": "#EF476F", "count": 58}], "total": 203};
+const DATA = {"flows": [{"origin_state": "OTHERS", "origin_city": "Other Regions", "origin_name": "Other Regions", "olat": -25.2744, "olon": 133.7751, "dest_number": "03 9763 1223", "dest_city": "Melbourne", "dlat": -37.8136, "dlon": 144.9631, "color": "#118AB2", "count": 45}, {"origin_state": "NSW", "origin_city": "Sydney", "origin_name": "Sydney", "olat": -33.8688, "olon": 151.2093, "dest_number": "02 9876 1234", "dest_city": "Sydney", "dlat": -33.8688, "dlon": 151.2093, "color": "#EF476F", "count": 26}, {"origin_state": "VIC", "origin_city": "Melbourne", "origin_name": "Melbourne", "olat": -37.8136, "olon": 144.9631, "dest_number": "03 9763 1223", "dest_city": "Melbourne", "dlat": -37.8136, "dlon": 144.9631, "color": "#118AB2", "count": 23}, {"origin_state": "NSW", "origin_city": "Newcastle", "origin_name": "Newcastle", "olat": -32.9267, "olon": 151.7789, "dest_number": "02 9876 1234", "dest_city": "Sydney", "dlat": -33.8688, "dlon": 151.2093, "color": "#EF476F", "count": 17}, {"origin_state": "VIC", "origin_city": "Ballarat", "origin_name": "Ballarat", "olat": -37.5622, "olon": 143.8503, "dest_number": "03 9763 1223", "dest_city": "Melbourne", "dlat": -37.8136, "dlon": 144.9631, "color": "#118AB2", "count": 13}, {"origin_state": "NSW", "origin_city": "Central Coast", "origin_name": "Central Coast", "olat": -33.43, "olon": 151.35, "dest_number": "02 9876 1234", "dest_city": "Sydney", "dlat": -33.8688, "dlon": 151.2093, "color": "#EF476F", "count": 11}, {"origin_state": "NSW", "origin_city": "Albury", "origin_name": "Albury", "olat": -36.0737, "olon": 146.9135, "dest_number": "03 9763 1223", "dest_city": "Melbourne", "dlat": -37.8136, "dlon": 144.9631, "color": "#118AB2", "count": 11}, {"origin_state": "QLD", "origin_city": "Gold Coast", "origin_name": "Gold Coast", "olat": -28.0167, "olon": 153.4, "dest_number": "07 5645 7312", "dest_city": "Gold Coast", "dlat": -28.0167, "dlon": 153.4, "color": "#FFD166", "count": 9}, {"origin_state": "QLD", "origin_city": "Rockhampton", "origin_name": "Rockhampton", "olat": -23.3791, "olon": 150.51, "dest_number": "07 3345 6798", "dest_city": "Brisbane", "dlat": -27.4698, "dlon": 153.0251, "color": "#06D6A0", "count": 7}, {"origin_state": "QLD", "origin_city": "Townsville", "origin_name": "Townsville", "olat": -19.2576, "olon": 146.8177, "dest_number": "07 3345 6798", "dest_city": "Brisbane", "dlat": -27.4698, "dlon": 153.0251, "color": "#06D6A0", "count": 5}, {"origin_state": "TAS", "origin_city": "Tasmania", "origin_name": "Tasmania", "olat": -42.0397, "olon": 146.8088, "dest_number": "03 9763 1223", "dest_city": "Melbourne", "dlat": -37.8136, "dlon": 144.9631, "color": "#118AB2", "count": 4}, {"origin_state": "QLD", "origin_city": "Brisbane", "origin_name": "Brisbane", "olat": -27.4698, "olon": 153.0251, "dest_number": "07 3345 6798", "dest_city": "Brisbane", "dlat": -27.4698, "dlon": 153.0251, "color": "#06D6A0", "count": 4}, {"origin_state": "SA", "origin_city": "Adelaide", "origin_name": "Adelaide", "olat": -34.9285, "olon": 138.6007, "dest_number": "03 9763 1223", "dest_city": "Melbourne", "dlat": -37.8136, "dlon": 144.9631, "color": "#118AB2", "count": 4}, {"origin_state": "QLD", "origin_city": "Sunshine Coast", "origin_name": "Sunshine Coast", "olat": -26.65, "olon": 153.0667, "dest_number": "07 3345 6798", "dest_city": "Brisbane", "dlat": -27.4698, "dlon": 153.0251, "color": "#06D6A0", "count": 4}, {"origin_state": "WA", "origin_city": "Perth", "origin_name": "Perth", "olat": -31.9505, "olon": 115.8605, "dest_number": "08 9498 1234", "dest_city": "Perth", "dlat": -31.9505, "dlon": 115.8605, "color": "#FF6B35", "count": 4}, {"origin_state": "NSW", "origin_city": "Sydney", "origin_name": "Sydney", "olat": -33.8688, "olon": 151.2093, "dest_number": "07 5645 7312", "dest_city": "Gold Coast", "dlat": -28.0167, "dlon": 153.4, "color": "#FFD166", "count": 3}, {"origin_state": "NSW", "origin_city": "Albury", "origin_name": "Albury", "olat": -36.0737, "olon": 146.9135, "dest_number": "08 9498 1234", "dest_city": "Perth", "dlat": -31.9505, "dlon": 115.8605, "color": "#FF6B35", "count": 2}, {"origin_state": "OTHERS", "origin_city": "Other Regions", "origin_name": "Other Regions", "olat": -25.2744, "olon": 133.7751, "dest_number": "08 9498 1234", "dest_city": "Perth", "dlat": -31.9505, "dlon": 115.8605, "color": "#FF6B35", "count": 2}, {"origin_state": "VIC", "origin_city": "Melbourne", "origin_name": "Melbourne", "olat": -37.8136, "olon": 144.9631, "dest_number": "02 9876 1234", "dest_city": "Sydney", "dlat": -33.8688, "dlon": 151.2093, "color": "#EF476F", "count": 1}, {"origin_state": "SA", "origin_city": "Adelaide", "origin_name": "Adelaide", "olat": -34.9285, "olon": 138.6007, "dest_number": "07 5645 7312", "dest_city": "Gold Coast", "dlat": -28.0167, "dlon": 153.4, "color": "#FFD166", "count": 1}, {"origin_state": "VIC", "origin_city": "Melbourne", "origin_name": "Melbourne", "olat": -37.8136, "olon": 144.9631, "dest_number": "07 5645 7312", "dest_city": "Gold Coast", "dlat": -28.0167, "dlon": 153.4, "color": "#FFD166", "count": 1}, {"origin_state": "OTHERS", "origin_city": "Other Regions", "origin_name": "Other Regions", "olat": -25.2744, "olon": 133.7751, "dest_number": "02 9876 1234", "dest_city": "Sydney", "dlat": -33.8688, "dlon": 151.2093, "color": "#EF476F", "count": 1}, {"origin_state": "VIC", "origin_city": "Ballarat", "origin_name": "Ballarat", "olat": -37.5622, "olon": 143.8503, "dest_number": "07 5645 7312", "dest_city": "Gold Coast", "dlat": -28.0167, "dlon": 153.4, "color": "#FFD166", "count": 1}, {"origin_state": "NSW", "origin_city": "Newcastle", "origin_name": "Newcastle", "olat": -32.9267, "olon": 151.7789, "dest_number": "07 5645 7312", "dest_city": "Gold Coast", "dlat": -28.0167, "dlon": 153.4, "color": "#FFD166", "count": 1}, {"origin_state": "NSW", "origin_city": "Newcastle", "origin_name": "Newcastle", "olat": -32.9267, "olon": 151.7789, "dest_number": "08 9498 1234", "dest_city": "Perth", "dlat": -31.9505, "dlon": 115.8605, "color": "#FF6B35", "count": 1}, {"origin_state": "QLD", "origin_city": "Brisbane", "origin_name": "Brisbane", "olat": -27.4698, "olon": 153.0251, "dest_number": "03 9763 1223", "dest_city": "Melbourne", "dlat": -37.8136, "dlon": 144.9631, "color": "#118AB2", "count": 1}, {"origin_state": "OTHERS", "origin_city": "Other Regions", "origin_name": "Other Regions", "olat": -25.2744, "olon": 133.7751, "dest_number": "07 5645 7312", "dest_city": "Gold Coast", "dlat": -28.0167, "dlon": 153.4, "color": "#FFD166", "count": 1}], "origins": [{"city": "Other Regions", "state": "OTHERS", "lat": -25.2744, "lon": 133.7751, "count": 49}, {"city": "Sydney", "state": "NSW", "lat": -33.8688, "lon": 151.2093, "count": 29}, {"city": "Melbourne", "state": "VIC", "lat": -37.8136, "lon": 144.9631, "count": 25}, {"city": "Newcastle", "state": "NSW", "lat": -32.9267, "lon": 151.7789, "count": 19}, {"city": "Ballarat", "state": "VIC", "lat": -37.5622, "lon": 143.8503, "count": 14}, {"city": "Albury", "state": "NSW", "lat": -36.0737, "lon": 146.9135, "count": 13}, {"city": "Central Coast", "state": "NSW", "lat": -33.43, "lon": 151.35, "count": 11}, {"city": "Gold Coast", "state": "QLD", "lat": -28.0167, "lon": 153.4, "count": 9}, {"city": "Rockhampton", "state": "QLD", "lat": -23.3791, "lon": 150.51, "count": 7}, {"city": "Townsville", "state": "QLD", "lat": -19.2576, "lon": 146.8177, "count": 5}, {"city": "Brisbane", "state": "QLD", "lat": -27.4698, "lon": 153.0251, "count": 5}, {"city": "Adelaide", "state": "SA", "lat": -34.9285, "lon": 138.6007, "count": 5}, {"city": "Tasmania", "state": "TAS", "lat": -42.0397, "lon": 146.8088, "count": 4}, {"city": "Sunshine Coast", "state": "QLD", "lat": -26.65, "lon": 153.0667, "count": 4}, {"city": "Perth", "state": "WA", "lat": -31.9505, "lon": 115.8605, "count": 4}], "destinations": [{"number": "08 9498 1234", "city": "Perth", "lat": -31.9505, "lon": 115.8605, "weight": 0.2, "color": "#FF6B35", "count": 9}, {"number": "07 5645 7312", "city": "Gold Coast", "lat": -28.0167, "lon": 153.4, "weight": 0.15, "color": "#FFD166", "count": 17}, {"number": "07 3345 6798", "city": "Brisbane", "lat": -27.4698, "lon": 153.0251, "weight": 0.1, "color": "#06D6A0", "count": 20}, {"number": "03 9763 1223", "city": "Melbourne", "lat": -37.8136, "lon": 144.9631, "weight": 0.25, "color": "#118AB2", "count": 101}, {"number": "02 9876 1234", "city": "Sydney", "lat": -33.8688, "lon": 151.2093, "weight": 0.3, "color": "#EF476F", "count": 56}], "states": [{"state": "NSW", "count": 72}, {"state": "OTHERS", "count": 49}, {"state": "VIC", "count": 39}, {"state": "QLD", "count": 30}, {"state": "SA", "count": 5}, {"state": "TAS", "count": 4}, {"state": "WA", "count": 4}], "total": 203};
 </script>
 <script src="https://d3js.org/d3.v7.min.js"></script>
 <script src="https://unpkg.com/topojson-client@3/dist/topojson-client.min.js"></script>
 <script>
 (async () => {
-  const { flows, origins, destinations, total } = DATA;
+  const { flows, origins, destinations, states, total } = DATA;
 
-  // Slightly deeper colours that read well on a light map
-  const colourMap = {
+  // ── Colour helpers ────────────────────────────────────────────────────────
+  // Slightly darker AP colours for readability on light background
+  const AP_DARK = {
     '#FF6B35': '#d44800',
     '#FFD166': '#b87e00',
     '#06D6A0': '#059a72',
     '#118AB2': '#0a6d92',
     '#EF476F': '#c82050',
   };
-  function col(c) { return colourMap[c] || c; }
+  function apCol(c) { return AP_DARK[c] || c; }
 
-  // ── Header ──────────────────────────────────────────────────────────
+  const STATE_COL = {
+    NSW: '#c82050', VIC: '#0a6d92', QLD: '#b87e00',
+    SA:  '#059a72', WA:  '#d44800', TAS: '#6a5a9a', OTHERS: '#5a7a98',
+  };
+
+  // ── Header KPIs ───────────────────────────────────────────────────────────
   document.getElementById('sub').textContent =
-    total + ' geographic calls  ·  ' + flows.length + ' origin → destination routes';
+    total + ' geographic calls  ·  ' + origins.length + ' origin cities  ·  ' + flows.length + ' routes';
 
   document.getElementById('kpis').innerHTML = [
     [total,               'Geographic Calls'],
-    [origins.length,      'Origin States'],
+    [origins.length,      'Origin Cities'],
     [destinations.length, 'Answering Points'],
-    [flows.length,        'Route Pairs'],
+    [flows.length,        'Routes'],
   ].map(([v, l]) =>
     '<div class="kpi"><div class="kpi-v">' + v +
     '</div><div class="kpi-l">' + l + '</div></div>'
   ).join('');
 
-  // ── Legend ──────────────────────────────────────────────────────────
+  // ── State Filter Buttons ──────────────────────────────────────────────────
+  const stateTotals = { ALL: total };
+  states.forEach(s => { stateTotals[s.state] = s.count; });
+
+  const filterBar = document.getElementById('filter-bar');
+
+  function makeBtn(stateCode, label, count) {
+    const btn = document.createElement('button');
+    btn.className = 'sf' + (stateCode === 'ALL' ? ' active' : '');
+    btn.dataset.state = stateCode;
+    if (stateCode !== 'ALL') btn.style.setProperty('--sc', STATE_COL[stateCode] || '#4a7a9a');
+    else btn.style.setProperty('--sc', '#2a5070');
+    btn.innerHTML = label + '<span class="sf-count">' + count + '</span>';
+    btn.addEventListener('click', () => setFilter(stateCode));
+    filterBar.appendChild(btn);
+  }
+
+  makeBtn('ALL', 'All States', total);
+  states.forEach(s => makeBtn(s.state, s.state, s.count));
+
+  // ── Legend ────────────────────────────────────────────────────────────────
   document.getElementById('leg').innerHTML = destinations.map(d =>
     '<div class="leg-row">' +
-      '<div class="leg-dot" style="background:' + col(d.color) + '"></div>' +
-      '<div class="leg-info">' +
-        '<div class="leg-city">' + d.city + '</div>' +
-        '<div class="leg-num">' + d.number + '</div>' +
-      '</div>' +
+      '<div class="leg-dot" style="background:' + apCol(d.color) + '"></div>' +
+      '<div class="leg-info"><div class="leg-city">' + d.city + '</div>' +
+        '<div class="leg-num">' + d.number + '</div></div>' +
       '<div class="leg-cnt">' + d.count + '<br><span class="leg-wt">' +
-        (d.weight * 100).toFixed(0) + '% weight</span></div>' +
+        (d.weight*100).toFixed(0) + '% weight</span></div>' +
     '</div>'
   ).join('');
 
-  // ── Tables ──────────────────────────────────────────────────────────
-  const maxO = Math.max(...origins.map(o => o.count));
-  document.getElementById('t-orig').innerHTML =
-    '<tr><th>State / Region</th><th>Calls</th><th style="min-width:130px">Share</th></tr>' +
-    origins.map(o => {
-      const pct = (o.count / total * 100).toFixed(1);
-      return '<tr>' +
-        '<td>' + o.name + '</td>' +
-        '<td style="font-variant-numeric:tabular-nums">' + o.count + '</td>' +
-        '<td><div class="bar-wrap">' +
-          '<div class="bar-bg"><div class="bar-fill" style="width:' +
-            (o.count / maxO * 100).toFixed(1) + '%;background:#4a8ab0"></div></div>' +
-          '<span class="pct">' + pct + '%</span>' +
-        '</div></td></tr>';
-    }).join('');
+  // ── Stats Tables ──────────────────────────────────────────────────────────
+  function renderTables(filterState) {
+    const filtFlows  = filterState === 'ALL' ? flows : flows.filter(f => f.origin_state === filterState);
+    const filtOrigins = filterState === 'ALL' ? origins : origins.filter(o => o.state === filterState);
 
-  document.getElementById('t-dest').innerHTML =
-    '<tr><th>Number</th><th>City</th><th>Calls</th><th style="min-width:130px">Weight</th></tr>' +
-    destinations.map(d =>
-      '<tr>' +
-        '<td class="mono">' + d.number + '</td>' +
-        '<td><span class="swatch" style="background:' + col(d.color) + '"></span>' + d.city + '</td>' +
-        '<td style="font-variant-numeric:tabular-nums">' + d.count + '</td>' +
-        '<td><div class="bar-wrap">' +
-          '<div class="bar-bg"><div class="bar-fill" style="width:' +
-            (d.weight * 100).toFixed(0) + '%;background:' + col(d.color) + '88"></div></div>' +
-          '<span class="pct">' + (d.weight * 100).toFixed(0) + '%</span>' +
-        '</div></td></tr>'
-    ).join('');
+    // Aggregate dest counts for this filter
+    const dCounts = {};
+    filtFlows.forEach(f => { dCounts[f.dest_number] = (dCounts[f.dest_number] || 0) + f.count; });
+    const filtTotal = filtFlows.reduce((s, f) => s + f.count, 0) || 1;
 
-  // ── Map ─────────────────────────────────────────────────────────────
+    // Origins table
+    const maxO = Math.max(...filtOrigins.map(o => o.count), 1);
+    document.getElementById('orig-title').textContent =
+      filterState === 'ALL' ? 'Calls by Origin City' : filterState + ' — Origin Cities';
+
+    document.getElementById('t-orig').innerHTML =
+      '<tr><th>City</th><th>State</th><th>Calls</th><th style="min-width:120px">Share</th></tr>' +
+      filtOrigins.map(o => {
+        const pct = (o.count / filtTotal * 100).toFixed(1);
+        const sc  = STATE_COL[o.state] || '#4a7a9a';
+        return '<tr>' +
+          '<td>' + o.city + '</td>' +
+          '<td><span class="state-tag" style="background:' + sc + '">' + o.state + '</span></td>' +
+          '<td style="font-variant-numeric:tabular-nums">' + o.count + '</td>' +
+          '<td><div class="bar-wrap">' +
+            '<div class="bar-bg"><div class="bar-fill" style="width:' +
+              (o.count/maxO*100).toFixed(1) + '%;background:' + sc + '88"></div></div>' +
+            '<span class="pct">' + pct + '%</span>' +
+          '</div></td></tr>';
+      }).join('');
+
+    // Destinations table
+    const maxD = Math.max(...destinations.map(d => dCounts[d.number] || 0), 1);
+    document.getElementById('t-dest').innerHTML =
+      '<tr><th>Number</th><th>City</th><th>Calls</th><th style="min-width:120px">Weight</th></tr>' +
+      destinations.map(d => {
+        const cnt = dCounts[d.number] || 0;
+        const pct = (cnt / filtTotal * 100).toFixed(1);
+        return '<tr>' +
+          '<td class="mono">' + d.number + '</td>' +
+          '<td><span class="swatch" style="background:' + apCol(d.color) + '"></span>' + d.city + '</td>' +
+          '<td style="font-variant-numeric:tabular-nums">' + cnt + '</td>' +
+          '<td><div class="bar-wrap">' +
+            '<div class="bar-bg"><div class="bar-fill" style="width:' +
+              (cnt/maxD*100).toFixed(1) + '%;background:' + apCol(d.color) + '88"></div></div>' +
+            '<span class="pct">' + pct + '%</span>' +
+          '</div></td></tr>';
+      }).join('');
+  }
+
+  renderTables('ALL');
+
+  // ── Map ───────────────────────────────────────────────────────────────────
   const wrap = document.getElementById('map-wrap');
-  const W = wrap.clientWidth;
-  const H = wrap.clientHeight;
+  const W = wrap.clientWidth, H = wrap.clientHeight;
 
   const svg = d3.select('#map-wrap').insert('svg', ':first-child')
     .attr('width', W).attr('height', H);
 
-  // Background fill (ocean)
-  svg.append('rect').attr('width', W).attr('height', H).attr('fill', '#d0e4f2');
+  svg.append('rect').attr('width', W).attr('height', H).attr('fill', '#cde0f0');
 
   let projection;
-
   try {
-    const world = await d3.json(
-      'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json'
-    );
+    const world = await d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json');
     const ctries = topojson.feature(world, world.objects.countries);
     const aus = ctries.features.find(f => +f.id === 36);
-
-    projection = d3.geoMercator()
-      .fitExtent([[50, 28], [W - 270, H - 28]], aus);
-
+    projection = d3.geoMercator().fitExtent([[50, 28], [W - 265, H - 28]], aus);
     const gp = d3.geoPath().projection(projection);
 
-    // Graticule
-    svg.append('path')
-      .datum(d3.geoGraticule()())
-      .attr('d', gp)
-      .attr('fill', 'none')
-      .attr('stroke', '#b8d0e8')
-      .attr('stroke-width', 0.4)
-      .attr('opacity', 0.6);
+    svg.append('path').datum(d3.geoGraticule()())
+      .attr('d', gp).attr('fill', 'none')
+      .attr('stroke', '#b8d0e6').attr('stroke-width', .4).attr('opacity', .6);
 
-    // Countries
-    svg.append('g').selectAll('path')
-      .data(ctries.features)
-      .join('path')
+    svg.append('g').selectAll('path').data(ctries.features).join('path')
       .attr('d', gp)
-      .attr('fill', d => +d.id === 36 ? '#e2eef8' : '#c8dcea')
-      .attr('stroke', d => +d.id === 36 ? '#8aaec8' : '#b0cade')
+      .attr('fill', d => +d.id === 36 ? '#e0ecf8' : '#c6d8ea')
+      .attr('stroke', d => +d.id === 36 ? '#88aacc' : '#aac0d4')
       .attr('stroke-width', d => +d.id === 36 ? 1.0 : 0.3);
-
-  } catch (err) {
-    projection = d3.geoMercator()
-      .center([133.7, -27.5])
-      .scale(W * 0.80)
-      .translate([W * 0.44, H * 0.52]);
+  } catch(e) {
+    projection = d3.geoMercator().center([133.7, -27.5]).scale(W * .80).translate([W * .44, H * .52]);
   }
 
   const px = (lon, lat) => projection([lon, lat]);
 
-  // Build arc screen-coordinate data
+  // ── Compute arc bezier data ───────────────────────────────────────────────
   const arcData = flows.map(f => {
     const [ox, oy] = px(f.olon, f.olat);
     const [dx, dy] = px(f.dlon, f.dlat);
-    const mx = (ox + dx) / 2, my = (oy + dy) / 2;
-    const dist = Math.hypot(dx - ox, dy - oy) || 1;
-    const offset = Math.min(85, dist * 0.28);
-    const cx = mx - (dy - oy) / dist * offset;
-    const cy = my + (dx - ox) / dist * offset;
-    const d = 'M' + ox + ',' + oy + ' Q' + cx + ',' + cy + ' ' + dx + ',' + dy;
-    return { ...f, ox, oy, dx, dy, cx, cy, d, c: col(f.color) };
+    const mx = (ox+dx)/2, my = (oy+dy)/2;
+    const dist = Math.hypot(dx-ox, dy-oy) || 1;
+    const off  = Math.min(80, dist * 0.28);
+    const cx   = mx - (dy-oy)/dist * off;
+    const cy   = my + (dx-ox)/dist * off;
+    const d    = 'M'+ox+','+oy+' Q'+cx+','+cy+' '+dx+','+dy;
+    return { ...f, ox, oy, dx, dy, cx, cy, d, c: apCol(f.color) };
   });
 
-  // Measure path lengths via a hidden SVG element
-  const measureSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  measureSvg.style.cssText = 'position:absolute;visibility:hidden;pointer-events:none';
-  document.body.appendChild(measureSvg);
-  const measurePath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-  measureSvg.appendChild(measurePath);
-  arcData.forEach(a => {
-    measurePath.setAttribute('d', a.d);
-    a.pathLen = measurePath.getTotalLength();
-  });
-  document.body.removeChild(measureSvg);
+  // Measure path lengths
+  const msv = document.createElementNS('http://www.w3.org/2000/svg','svg');
+  msv.style.cssText = 'position:absolute;visibility:hidden;pointer-events:none';
+  document.body.appendChild(msv);
+  const msp = document.createElementNS('http://www.w3.org/2000/svg','path');
+  msv.appendChild(msp);
+  arcData.forEach(a => { msp.setAttribute('d', a.d); a.pathLen = msp.getTotalLength(); });
+  document.body.removeChild(msv);
 
-  // ── Faint background arc paths (dashed) ─────────────────────────────
+  // Filter out self-loops (origin ≈ destination, < 25px)
+  const drawableArcs = arcData.filter(a => a.pathLen >= 25);
+
+  // ── Background arc paths ──────────────────────────────────────────────────
   const arcG = svg.append('g');
-  arcData.forEach(a => {
-    arcG.append('path')
-      .attr('d', a.d)
-      .attr('fill', 'none')
-      .attr('stroke', a.c)
-      .attr('stroke-width', Math.max(0.6, Math.min(2, a.count / 7)))
-      .attr('stroke-opacity', 0.22)
-      .attr('stroke-dasharray', '5 8');
-  });
+  const arcPaths = arcG.selectAll('path').data(drawableArcs).join('path')
+    .attr('d', a => a.d)
+    .attr('fill', 'none')
+    .attr('stroke', a => a.c)
+    .attr('stroke-width', a => Math.max(.6, Math.min(2, a.count/7)))
+    .attr('stroke-dasharray', '5 8')
+    .attr('stroke-opacity', .22);
 
-  // ── Origin nodes ──────────────────────────────────────────────────────
+  // ── Origin nodes ──────────────────────────────────────────────────────────
   const maxOC = Math.max(...origins.map(o => o.count));
-  const origG = svg.append('g');
-  origins.forEach(o => {
+  const origG  = svg.append('g');
+
+  const origNodes = origG.selectAll('g.on').data(origins).join('g').attr('class', 'on');
+  origNodes.each(function(o) {
     const p = px(o.lon, o.lat);
     if (!p || isNaN(p[0])) return;
     const [x, y] = p;
     const r = 4 + (o.count / maxOC) * 7;
+    const sc = STATE_COL[o.state] || '#4a7a9a';
 
-    origG.append('circle')
+    d3.select(this).append('circle')
       .attr('cx', x).attr('cy', y).attr('r', r)
-      .attr('fill', 'rgba(90,138,170,0.55)')
-      .attr('stroke', '#3a6a8a')
-      .attr('stroke-width', 1.2);
+      .attr('fill', sc + '66')
+      .attr('stroke', sc).attr('stroke-width', 1.3);
 
-    origG.append('text')
+    d3.select(this).append('text')
       .attr('x', x + r + 4).attr('y', y + 3.5)
-      .attr('fill', '#2a5070')
-      .attr('font-size', 9).attr('font-family', 'monospace')
-      .attr('font-weight', 'bold')
-      .text(o.state);
+      .attr('fill', sc)
+      .attr('font-size', 9).attr('font-family', 'monospace').attr('font-weight', 'bold')
+      .text(o.city);
   });
 
-  // ── Destination nodes ─────────────────────────────────────────────────
+  // ── Destination nodes ─────────────────────────────────────────────────────
   const destG = svg.append('g');
   destinations.forEach(d => {
     const p = px(d.lon, d.lat);
     if (!p || isNaN(p[0])) return;
-    const [x, y] = p;
-    const c = col(d.color);
+    const [x, y] = p; const c = apCol(d.color);
 
-    // Pulse ring
     const ring = destG.append('circle')
-      .attr('cx', x).attr('cy', y)
-      .attr('fill', 'none')
-      .attr('stroke', c).attr('stroke-width', 1.5)
-      .attr('opacity', 0);
+      .attr('cx', x).attr('cy', y).attr('fill', 'none')
+      .attr('stroke', c).attr('stroke-width', 1.5).attr('opacity', 0);
     (function pulse() {
-      ring.attr('r', 8).attr('opacity', 0.7)
+      ring.attr('r', 8).attr('opacity', .7)
         .transition().duration(2200).ease(d3.easeExpOut)
-        .attr('r', 30).attr('opacity', 0)
-        .on('end', pulse);
+        .attr('r', 30).attr('opacity', 0).on('end', pulse);
     })();
 
-    // Core dot with white outline for legibility on light bg
-    destG.append('circle')
-      .attr('cx', x).attr('cy', y).attr('r', 7)
-      .attr('fill', 'white')
-      .attr('stroke', c).attr('stroke-width', 0);
-    destG.append('circle')
-      .attr('cx', x).attr('cy', y).attr('r', 5.5)
-      .attr('fill', c)
-      .attr('stroke', 'white').attr('stroke-width', 1.5);
+    destG.append('circle').attr('cx', x).attr('cy', y).attr('r', 5.5)
+      .attr('fill', c).attr('stroke', 'white').attr('stroke-width', 1.8);
 
-    // Label
-    const east = x > W * 0.55;
-    const lx = east ? x - 11 : x + 11;
-    const anchor = east ? 'end' : 'start';
-    destG.append('text')
-      .attr('x', lx).attr('y', y - 9)
-      .attr('fill', '#1a2a3a')
-      .attr('font-size', 10).attr('font-family', 'monospace')
-      .attr('font-weight', 'bold')
-      .attr('text-anchor', anchor)
-      .text(d.city);
-    destG.append('text')
-      .attr('x', lx).attr('y', y + 2)
-      .attr('fill', '#7a9ab8')
-      .attr('font-size', 8.5).attr('font-family', 'monospace')
-      .attr('text-anchor', anchor)
-      .text(d.number);
+    const east = x > W * .55;
+    const lx = east ? x - 10 : x + 10;
+    const anc = east ? 'end' : 'start';
+    destG.append('text').attr('x', lx).attr('y', y - 9)
+      .attr('fill', '#1a2a3a').attr('font-size', 10).attr('font-family', 'monospace')
+      .attr('font-weight', 'bold').attr('text-anchor', anc).text(d.city);
+    destG.append('text').attr('x', lx).attr('y', y + 2)
+      .attr('fill', '#7a9ab8').attr('font-size', 8.5).attr('font-family', 'monospace')
+      .attr('text-anchor', anc).text(d.number);
   });
 
-  // ── Travelling line-segment animation ────────────────────────────────
-  // Each "particle" is a short arc segment using stroke-dashoffset animation.
-  // The segment travels from origin to destination at a slow, readable pace.
+  // ── Particle (travelling line-segment) animation ──────────────────────────
   const partG = svg.append('g');
+  let activeState = 'ALL';
 
   function spawnSegment(arc) {
-    const segLen = 52;           // visible segment length in px
+    const segLen = 52;
     const total  = arc.pathLen;
-    const dur    = 3800 + Math.random() * 1600;  // 3.8 – 5.4 s
+    const dur    = 3800 + Math.random() * 1600;
 
-    // dasharray: [segLen visible] [total+segLen gap] — ensures only one dash visible
-    // dashoffset animates 0 → -(total + segLen): moves dash from start to past-end
     const seg = partG.append('path')
       .attr('d', arc.d)
       .attr('fill', 'none')
@@ -460,23 +434,66 @@ const DATA = {"flows": [{"origin": "NSW", "origin_name": "New South Wales", "ola
       .attr('stroke-linecap', 'round')
       .attr('stroke-dasharray', segLen + ' ' + (total + segLen))
       .attr('stroke-dashoffset', 0)
-      .attr('opacity', 0.9);
+      .attr('opacity', .9);
 
-    seg.transition()
-      .duration(dur)
-      .ease(d3.easeLinear)
+    seg.transition().duration(dur).ease(d3.easeLinear)
       .attr('stroke-dashoffset', -(total + segLen))
       .on('end', function() { d3.select(this).remove(); });
   }
 
-  // Stagger initial spawns; rate proportional to call count
-  arcData.forEach((arc, i) => {
-    const interval = Math.max(1200, Math.round(18000 / arc.count));  // slower cadence
+  function shouldAnimate(arc) {
+    return activeState === 'ALL' || arc.origin_state === activeState;
+  }
+
+  // Start all intervals — each checks shouldAnimate() before spawning
+  drawableArcs.forEach((arc, i) => {
+    const interval = Math.max(1200, Math.round(18000 / arc.count));
     setTimeout(() => {
-      spawnSegment(arc);
-      setInterval(() => spawnSegment(arc), interval);
-    }, Math.random() * interval + i * 120);
+      if (shouldAnimate(arc)) spawnSegment(arc);
+      setInterval(() => { if (shouldAnimate(arc)) spawnSegment(arc); }, interval);
+    }, Math.random() * interval + i * 100);
   });
+
+  // ── State filter logic ────────────────────────────────────────────────────
+  const badge = document.getElementById('state-badge');
+
+  function setFilter(state) {
+    activeState = state;
+
+    // Buttons
+    document.querySelectorAll('.sf').forEach(b =>
+      b.classList.toggle('active', b.dataset.state === state)
+    );
+
+    // Arc path opacity
+    arcPaths.transition().duration(250)
+      .attr('stroke-opacity', a =>
+        state === 'ALL' || a.origin_state === state ? .22 : .04
+      );
+
+    // Origin node opacity
+    origNodes.transition().duration(250)
+      .attr('opacity', o =>
+        state === 'ALL' || o.state === state ? 1 : 0.1
+      );
+
+    // Remove any in-flight particles from previous filter
+    partG.selectAll('path').interrupt().remove();
+
+    // Badge
+    if (state !== 'ALL') {
+      const sc = STATE_COL[state] || '#2a5070';
+      badge.style.display = 'block';
+      badge.style.borderColor = sc;
+      badge.style.color = sc;
+      badge.textContent = state + ' — ' + (stateTotals[state] || 0) + ' calls';
+    } else {
+      badge.style.display = 'none';
+    }
+
+    // Tables
+    renderTables(state);
+  }
 
 })();
 </script>
