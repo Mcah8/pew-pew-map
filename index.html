@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Geographic Call Map</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #04091a;
+      color: #c8d8e8;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ── Header ─────────────────────────────── */
+    .header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding: 18px 32px 14px;
+      background: #020713;
+      border-bottom: 1px solid #0c1e36;
+    }
+    .header h1 {
+      font-size: 20px;
+      font-weight: 300;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: #6aaed8;
+    }
+    .header .sub {
+      font-size: 11px;
+      color: #2a4a6a;
+      margin-top: 4px;
+      letter-spacing: 1px;
+    }
+    .kpis {
+      display: flex;
+      gap: 28px;
+    }
+    .kpi { text-align: right; }
+    .kpi-v {
+      font-size: 28px;
+      font-weight: 200;
+      color: #6aaed8;
+      line-height: 1;
+    }
+    .kpi-l {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #2a4a6a;
+      margin-top: 3px;
+    }
+
+    /* ── Map ─────────────────────────────────── */
+    #map-wrap {
+      position: relative;
+      width: 100%;
+      height: 590px;
+      background: #02060f;
+      overflow: hidden;
+    }
+    #map-wrap svg {
+      display: block;
+      position: absolute;
+      top: 0; left: 0;
+    }
+
+    /* ── Map legend ──────────────────────────── */
+    .map-legend {
+      position: absolute;
+      top: 18px;
+      right: 22px;
+      background: rgba(2, 6, 15, 0.90);
+      border: 1px solid #0c1e36;
+      border-radius: 6px;
+      padding: 14px 16px;
+      min-width: 235px;
+      backdrop-filter: blur(10px);
+      z-index: 10;
+    }
+    .map-legend h3 {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #2a4a6a;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #0c1e36;
+    }
+    .leg-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 9px;
+    }
+    .leg-dot {
+      width: 9px; height: 9px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .leg-info { flex: 1; min-width: 0; }
+    .leg-city { font-size: 12px; color: #b0c8e0; }
+    .leg-num  { font-size: 10px; color: #2a4a6a; font-family: monospace; }
+    .leg-cnt  { font-size: 11px; color: #4a6a88; text-align: right; }
+    .leg-wt   { font-size: 9px;  color: #2a4a6a; }
+
+    .origin-hint {
+      position: absolute;
+      bottom: 16px;
+      left: 22px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(2, 6, 15, 0.80);
+      border: 1px solid #0c1e36;
+      border-radius: 4px;
+      padding: 6px 12px;
+      font-size: 10px;
+      color: #2a4a6a;
+      z-index: 10;
+    }
+    .oh-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: rgba(130, 180, 210, 0.8);
+      border: 1px solid #4a7a9a;
+      flex-shrink: 0;
+    }
+
+    /* ── Stats ───────────────────────────────── */
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-top: 1px solid #0c1e36;
+    }
+    .sp {
+      padding: 20px 28px 24px;
+      background: #030914;
+    }
+    .sp:first-child { border-right: 1px solid #0c1e36; }
+    .sp h2 {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #2a4a6a;
+      margin-bottom: 14px;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    th {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #1e3a58;
+      font-weight: 400;
+      padding: 0 8px 8px;
+      text-align: left;
+      border-bottom: 1px solid #081428;
+    }
+    td {
+      padding: 8px 8px;
+      font-size: 13px;
+      color: #a0bcd4;
+      border-bottom: 1px solid #060f1c;
+      vertical-align: middle;
+    }
+    tr:last-child td { border-bottom: none; }
+    .bar-wrap { display: flex; align-items: center; gap: 8px; }
+    .bar-bg { flex: 1; height: 3px; background: #081428; border-radius: 2px; overflow: hidden; }
+    .bar-fill { height: 3px; border-radius: 2px; }
+    .pct { font-size: 11px; color: #2a4a6a; width: 36px; text-align: right; flex-shrink: 0; }
+    .swatch {
+      display: inline-block; width: 7px; height: 7px;
+      border-radius: 50%; margin-right: 6px; vertical-align: middle;
+    }
+    .mono { font-family: monospace; font-size: 11px; color: #2a4a6a; }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>Geographic Call Map</h1>
+    <div class="sub" id="sub">—</div>
+  </div>
+  <div class="kpis" id="kpis"></div>
+</div>
+
+<div id="map-wrap">
+  <div class="map-legend">
+    <h3>Answering Points</h3>
+    <div id="leg"></div>
+  </div>
+  <div class="origin-hint">
+    <div class="oh-dot"></div>
+    Origin state &nbsp;·&nbsp; size = call volume
+  </div>
+</div>
+
+<div class="stats">
+  <div class="sp">
+    <h2>Calls by Origin State</h2>
+    <table id="t-orig"></table>
+  </div>
+  <div class="sp">
+    <h2>Calls by Answering Point</h2>
+    <table id="t-dest"></table>
+  </div>
+</div>
+
+<script>
+const DATA = {"flows": [{"origin": "NSW", "origin_name": "New South Wales", "olat": -32.1656, "olon": 147.0178, "dest_number": "02 9876 1234", "dest_city": "Sydney", "dlat": -33.8688, "dlon": 151.2093, "color": "#EF476F", "count": 18}, {"origin": "OTHERS", "origin_name": "Other Regions", "olat": -25.2744, "olon": 133.7751, "dest_number": "02 9876 1234", "dest_city": "Sydney", "dlat": -33.8688, "dlon": 151.2093, "color": "#EF476F", "count": 16}, {"origin": "NSW", "origin_name": "New South Wales", "olat": -32.1656, "olon": 147.0178, "dest_number": "07 5645 7312", "dest_city": "Gold Coast", "dlat": -28.0167, "dlon": 153.4, "color": "#FFD166", "count": 16}, {"origin": "NSW", "origin_name": "New South Wales", "olat": -32.1656, "olon": 147.0178, "dest_number": "03 9763 1223", "dest_city": "Melbourne", "dlat": -37.8136, "dlon": 144.9631, "color": "#118AB2", "count": 15}, {"origin": "NSW", "origin_name": "New South Wales", "olat": -32.1656, "olon": 147.0178, "dest_number": "08 9498 1234", "dest_city": "Perth", "dlat": -31.9505, "dlon": 115.8605, "color": "#FF6B35", "count": 14}, {"origin": "QLD", "origin_name": "Queensland", "olat": -22.5751, "olon": 144.0851, "dest_number": "03 9763 1223", "dest_city": "Melbourne", "dlat": -37.8136, "dlon": 144.9631, "color": "#118AB2", "count": 13}, {"origin": "VIC", "origin_name": "Victoria", "olat": -37.0207, "olon": 144.9643, "dest_number": "02 9876 1234", "dest_city": "Sydney", "dlat": -33.8688, "dlon": 151.2093, "color": "#EF476F", "count": 13}, {"origin": "OTHERS", "origin_name": "Other Regions", "olat": -25.2744, "olon": 133.7751, "dest_number": "03 9763 1223", "dest_city": "Melbourne", "dlat": -37.8136, "dlon": 144.9631, "color": "#118AB2", "count": 11}, {"origin": "OTHERS", "origin_name": "Other Regions", "olat": -25.2744, "olon": 133.7751, "dest_number": "08 9498 1234", "dest_city": "Perth", "dlat": -31.9505, "dlon": 115.8605, "color": "#FF6B35", "count": 9}, {"origin": "NSW", "origin_name": "New South Wales", "olat": -32.1656, "olon": 147.0178, "dest_number": "07 3345 6798", "dest_city": "Brisbane", "dlat": -27.4698, "dlon": 153.0251, "color": "#06D6A0", "count": 9}, {"origin": "OTHERS", "origin_name": "Other Regions", "olat": -25.2744, "olon": 133.7751, "dest_number": "07 5645 7312", "dest_city": "Gold Coast", "dlat": -28.0167, "dlon": 153.4, "color": "#FFD166", "count": 9}, {"origin": "VIC", "origin_name": "Victoria", "olat": -37.0207, "olon": 144.9643, "dest_number": "07 5645 7312", "dest_city": "Gold Coast", "dlat": -28.0167, "dlon": 153.4, "color": "#FFD166", "count": 8}, {"origin": "VIC", "origin_name": "Victoria", "olat": -37.0207, "olon": 144.9643, "dest_number": "03 9763 1223", "dest_city": "Melbourne", "dlat": -37.8136, "dlon": 144.9631, "color": "#118AB2", "count": 7}, {"origin": "VIC", "origin_name": "Victoria", "olat": -37.0207, "olon": 144.9643, "dest_number": "08 9498 1234", "dest_city": "Perth", "dlat": -31.9505, "dlon": 115.8605, "color": "#FF6B35", "count": 7}, {"origin": "QLD", "origin_name": "Queensland", "olat": -22.5751, "olon": 144.0851, "dest_number": "07 5645 7312", "dest_city": "Gold Coast", "dlat": -28.0167, "dlon": 153.4, "color": "#FFD166", "count": 6}, {"origin": "QLD", "origin_name": "Queensland", "olat": -22.5751, "olon": 144.0851, "dest_number": "02 9876 1234", "dest_city": "Sydney", "dlat": -33.8688, "dlon": 151.2093, "color": "#EF476F", "count": 6}, {"origin": "QLD", "origin_name": "Queensland", "olat": -22.5751, "olon": 144.0851, "dest_number": "08 9498 1234", "dest_city": "Perth", "dlat": -31.9505, "dlon": 115.8605, "color": "#FF6B35", "count": 4}, {"origin": "OTHERS", "origin_name": "Other Regions", "olat": -25.2744, "olon": 133.7751, "dest_number": "07 3345 6798", "dest_city": "Brisbane", "dlat": -27.4698, "dlon": 153.0251, "color": "#06D6A0", "count": 4}, {"origin": "VIC", "origin_name": "Victoria", "olat": -37.0207, "olon": 144.9643, "dest_number": "07 3345 6798", "dest_city": "Brisbane", "dlat": -27.4698, "dlon": 153.0251, "color": "#06D6A0", "count": 4}, {"origin": "TAS", "origin_name": "Tasmania", "olat": -42.0397, "olon": 146.8088, "dest_number": "08 9498 1234", "dest_city": "Perth", "dlat": -31.9505, "dlon": 115.8605, "color": "#FF6B35", "count": 2}, {"origin": "SA", "origin_name": "South Australia", "olat": -30.0002, "olon": 136.2092, "dest_number": "07 5645 7312", "dest_city": "Gold Coast", "dlat": -28.0167, "dlon": 153.4, "color": "#FFD166", "count": 2}, {"origin": "TAS", "origin_name": "Tasmania", "olat": -42.0397, "olon": 146.8088, "dest_number": "02 9876 1234", "dest_city": "Sydney", "dlat": -33.8688, "dlon": 151.2093, "color": "#EF476F", "count": 2}, {"origin": "WA", "origin_name": "Western Australia", "olat": -25.3284, "olon": 122.2257, "dest_number": "02 9876 1234", "dest_city": "Sydney", "dlat": -33.8688, "dlon": 151.2093, "color": "#EF476F", "count": 2}, {"origin": "SA", "origin_name": "South Australia", "olat": -30.0002, "olon": 136.2092, "dest_number": "02 9876 1234", "dest_city": "Sydney", "dlat": -33.8688, "dlon": 151.2093, "color": "#EF476F", "count": 1}, {"origin": "SA", "origin_name": "South Australia", "olat": -30.0002, "olon": 136.2092, "dest_number": "03 9763 1223", "dest_city": "Melbourne", "dlat": -37.8136, "dlon": 144.9631, "color": "#118AB2", "count": 1}, {"origin": "WA", "origin_name": "Western Australia", "olat": -25.3284, "olon": 122.2257, "dest_number": "08 9498 1234", "dest_city": "Perth", "dlat": -31.9505, "dlon": 115.8605, "color": "#FF6B35", "count": 1}, {"origin": "SA", "origin_name": "South Australia", "olat": -30.0002, "olon": 136.2092, "dest_number": "08 9498 1234", "dest_city": "Perth", "dlat": -31.9505, "dlon": 115.8605, "color": "#FF6B35", "count": 1}, {"origin": "WA", "origin_name": "Western Australia", "olat": -25.3284, "olon": 122.2257, "dest_number": "03 9763 1223", "dest_city": "Melbourne", "dlat": -37.8136, "dlon": 144.9631, "color": "#118AB2", "count": 1}, {"origin": "QLD", "origin_name": "Queensland", "olat": -22.5751, "olon": 144.0851, "dest_number": "07 3345 6798", "dest_city": "Brisbane", "dlat": -27.4698, "dlon": 153.0251, "color": "#06D6A0", "count": 1}], "origins": [{"state": "NSW", "name": "New South Wales", "lat": -32.1656, "lon": 147.0178, "count": 72}, {"state": "OTHERS", "name": "Other Regions", "lat": -25.2744, "lon": 133.7751, "count": 49}, {"state": "VIC", "name": "Victoria", "lat": -37.0207, "lon": 144.9643, "count": 39}, {"state": "QLD", "name": "Queensland", "lat": -22.5751, "lon": 144.0851, "count": 30}, {"state": "SA", "name": "South Australia", "lat": -30.0002, "lon": 136.2092, "count": 5}, {"state": "TAS", "name": "Tasmania", "lat": -42.0397, "lon": 146.8088, "count": 4}, {"state": "WA", "name": "Western Australia", "lat": -25.3284, "lon": 122.2257, "count": 4}], "destinations": [{"number": "08 9498 1234", "city": "Perth", "lat": -31.9505, "lon": 115.8605, "weight": 0.2, "color": "#FF6B35", "count": 38}, {"number": "07 5645 7312", "city": "Gold Coast", "lat": -28.0167, "lon": 153.4, "weight": 0.15, "color": "#FFD166", "count": 41}, {"number": "07 3345 6798", "city": "Brisbane", "lat": -27.4698, "lon": 153.0251, "weight": 0.1, "color": "#06D6A0", "count": 18}, {"number": "03 9763 1223", "city": "Melbourne", "lat": -37.8136, "lon": 144.9631, "weight": 0.25, "color": "#118AB2", "count": 48}, {"number": "02 9876 1234", "city": "Sydney", "lat": -33.8688, "lon": 151.2093, "weight": 0.3, "color": "#EF476F", "count": 58}], "total": 203};
+</script>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://unpkg.com/topojson-client@3/dist/topojson-client.min.js"></script>
+<script>
+(async () => {
+  const { flows, origins, destinations, total } = DATA;
+
+  // Header
+  document.getElementById('sub').textContent =
+    total + ' geographic calls  ·  ' + flows.length + ' origin → destination routes';
+
+  document.getElementById('kpis').innerHTML = [
+    [total,            'Geographic Calls'],
+    [origins.length,   'Origin States'],
+    [destinations.length, 'Answering Points'],
+    [flows.length,     'Route Pairs'],
+  ].map(([v, l]) =>
+    '<div class="kpi"><div class="kpi-v">' + v +
+    '</div><div class="kpi-l">' + l + '</div></div>'
+  ).join('');
+
+  // Legend
+  document.getElementById('leg').innerHTML = destinations.map(d =>
+    '<div class="leg-row">' +
+      '<div class="leg-dot" style="background:' + d.color + ';box-shadow:0 0 6px ' + d.color + '88"></div>' +
+      '<div class="leg-info">' +
+        '<div class="leg-city">' + d.city + '</div>' +
+        '<div class="leg-num">' + d.number + '</div>' +
+      '</div>' +
+      '<div class="leg-cnt">' + d.count + '<br><span class="leg-wt">' + (d.weight * 100).toFixed(0) + '% weight</span></div>' +
+    '</div>'
+  ).join('');
+
+  // Origin table
+  const maxO = Math.max(...origins.map(o => o.count));
+  document.getElementById('t-orig').innerHTML =
+    '<tr><th>State / Region</th><th>Calls</th><th style="min-width:130px">Share</th></tr>' +
+    origins.map(o => {
+      const pct = (o.count / total * 100).toFixed(1);
+      return '<tr>' +
+        '<td>' + o.name + '</td>' +
+        '<td style="font-variant-numeric:tabular-nums">' + o.count + '</td>' +
+        '<td><div class="bar-wrap">' +
+          '<div class="bar-bg"><div class="bar-fill" style="width:' + (o.count / maxO * 100).toFixed(1) + '%;background:#1e4878"></div></div>' +
+          '<span class="pct">' + pct + '%</span>' +
+        '</div></td>' +
+      '</tr>';
+    }).join('');
+
+  // Dest table
+  document.getElementById('t-dest').innerHTML =
+    '<tr><th>Number</th><th>City</th><th>Calls</th><th style="min-width:130px">Weight</th></tr>' +
+    destinations.map(d =>
+      '<tr>' +
+        '<td class="mono">' + d.number + '</td>' +
+        '<td><span class="swatch" style="background:' + d.color + '"></span>' + d.city + '</td>' +
+        '<td style="font-variant-numeric:tabular-nums">' + d.count + '</td>' +
+        '<td><div class="bar-wrap">' +
+          '<div class="bar-bg"><div class="bar-fill" style="width:' + (d.weight * 100).toFixed(0) + '%;background:' + d.color + '66"></div></div>' +
+          '<span class="pct">' + (d.weight * 100).toFixed(0) + '%</span>' +
+        '</div></td>' +
+      '</tr>'
+    ).join('');
+
+  // ── Map ──────────────────────────────────────────────────────────────
+  const wrap = document.getElementById('map-wrap');
+  const W = wrap.clientWidth;
+  const H = wrap.clientHeight;
+
+  const svg = d3.select('#map-wrap').insert('svg', ':first-child')
+    .attr('width', W).attr('height', H);
+
+  // Defs: glow filters
+  const defs = svg.append('defs');
+  function glowFilter(id, std) {
+    const f = defs.append('filter').attr('id', id)
+      .attr('x', '-100%').attr('y', '-100%')
+      .attr('width', '300%').attr('height', '300%');
+    f.append('feGaussianBlur').attr('in', 'SourceGraphic')
+      .attr('stdDeviation', std).attr('result', 'b');
+    const m = f.append('feMerge');
+    m.append('feMergeNode').attr('in', 'b');
+    m.append('feMergeNode').attr('in', 'SourceGraphic');
+  }
+  glowFilter('gs', 4);
+  glowFilter('gw', 1.8);
+
+  svg.append('rect').attr('width', W).attr('height', H).attr('fill', '#02060f');
+
+  // Project helper (set after atlas loads)
+  let projection;
+
+  try {
+    const world = await d3.json(
+      'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json'
+    );
+    const ctries = topojson.feature(world, world.objects.countries);
+    const aus = ctries.features.find(f => +f.id === 36);
+
+    // Fit to Australia, leaving space on right for legend
+    projection = d3.geoMercator()
+      .fitExtent([[50, 28], [W - 270, H - 28]], aus);
+
+    const gp = d3.geoPath().projection(projection);
+
+    svg.append('path')
+      .datum(d3.geoGraticule()())
+      .attr('d', gp)
+      .attr('fill', 'none')
+      .attr('stroke', '#06101e')
+      .attr('stroke-width', 0.4);
+
+    svg.append('g').selectAll('path')
+      .data(ctries.features)
+      .join('path')
+      .attr('d', gp)
+      .attr('fill', d => +d.id === 36 ? '#0b1d30' : '#060c18')
+      .attr('stroke', d => +d.id === 36 ? '#19365a' : '#08101e')
+      .attr('stroke-width', d => +d.id === 36 ? 0.8 : 0.3);
+  } catch (err) {
+    // Fallback projection if CDN fails
+    projection = d3.geoMercator()
+      .center([133.7, -27.5])
+      .scale(W * 0.80)
+      .translate([W * 0.44, H * 0.52]);
+  }
+
+  const px = (lon, lat) => projection([lon, lat]);
+
+  // Precompute arc screen coords + bezier control point
+  const arcData = flows.map(f => {
+    const [ox, oy] = px(f.olon, f.olat);
+    const [dx, dy] = px(f.dlon, f.dlat);
+    const mx = (ox + dx) / 2, my = (oy + dy) / 2;
+    const d = Math.hypot(dx - ox, dy - oy) || 1;
+    const offset = Math.min(90, d * 0.28);
+    // Control point perpendicular to chord (curves upward-left)
+    const cx = mx - (dy - oy) / d * offset;
+    const cy = my + (dx - ox) / d * offset;
+    return { ...f, ox, oy, dx, dy, cx, cy };
+  });
+
+  // Faint background arc paths
+  const arcG = svg.append('g');
+  arcData.forEach(a => {
+    arcG.append('path')
+      .attr('d', 'M' + a.ox + ',' + a.oy +
+                 ' Q' + a.cx + ',' + a.cy +
+                 ' ' + a.dx + ',' + a.dy)
+      .attr('fill', 'none')
+      .attr('stroke', a.color)
+      .attr('stroke-width', Math.max(0.5, Math.min(2.2, a.count / 7)))
+      .attr('stroke-opacity', 0.15)
+      .attr('stroke-dasharray', '4 7');
+  });
+
+  // Origin nodes
+  const maxOC = Math.max(...origins.map(o => o.count));
+  const origG = svg.append('g');
+  origins.forEach(o => {
+    const p = px(o.lon, o.lat);
+    if (!p || isNaN(p[0])) return;
+    const [x, y] = p;
+    const r = 3.5 + (o.count / maxOC) * 6.5;
+    origG.append('circle')
+      .attr('cx', x).attr('cy', y).attr('r', r)
+      .attr('fill', 'rgba(120, 175, 210, 0.70)')
+      .attr('stroke', '#4a7a9a').attr('stroke-width', 0.8)
+      .style('filter', 'url(#gw)');
+    origG.append('text')
+      .attr('x', x + r + 4).attr('y', y + 3.5)
+      .attr('fill', '#4a7a9a')
+      .attr('font-size', 9).attr('font-family', 'monospace')
+      .attr('font-weight', 'bold')
+      .text(o.state);
+  });
+
+  // Destination nodes with pulse
+  const destG = svg.append('g');
+  destinations.forEach(d => {
+    const p = px(d.lon, d.lat);
+    if (!p || isNaN(p[0])) return;
+    const [x, y] = p;
+
+    const ring = destG.append('circle')
+      .attr('cx', x).attr('cy', y)
+      .attr('fill', 'none')
+      .attr('stroke', d.color).attr('stroke-width', 1.3)
+      .attr('opacity', 0);
+
+    (function pulse() {
+      ring.attr('r', 7).attr('opacity', 0.85)
+        .transition().duration(1900).ease(d3.easeExpOut)
+        .attr('r', 28).attr('opacity', 0)
+        .on('end', pulse);
+    })();
+
+    destG.append('circle')
+      .attr('cx', x).attr('cy', y).attr('r', 5.5)
+      .attr('fill', d.color)
+      .style('filter', 'url(#gs)');
+
+    // Label (flip anchor for east-coast destinations)
+    const east = x > W * 0.55;
+    const lx = east ? x - 9 : x + 9;
+    const anchor = east ? 'end' : 'start';
+    destG.append('text')
+      .attr('x', lx).attr('y', y - 9)
+      .attr('fill', d.color)
+      .attr('font-size', 10).attr('font-family', 'monospace')
+      .attr('text-anchor', anchor).attr('opacity', 0.9)
+      .text(d.city);
+    destG.append('text')
+      .attr('x', lx).attr('y', y + 2)
+      .attr('fill', d.color)
+      .attr('font-size', 8.5).attr('font-family', 'monospace')
+      .attr('text-anchor', anchor).attr('opacity', 0.45)
+      .text(d.number);
+  });
+
+  // Particle animation
+  const partG = svg.append('g');
+
+  function spawnParticle(arc) {
+    const dot = partG.append('circle')
+      .attr('r', 2.8)
+      .attr('fill', arc.color)
+      .attr('opacity', 0)
+      .style('filter', 'url(#gs)');
+
+    const t0 = performance.now();
+    const dur = 1050 + Math.random() * 950;
+    const { ox, oy, cx, cy, dx, dy } = arc;
+
+    function step(now) {
+      const t = Math.min((now - t0) / dur, 1);
+      const mt = 1 - t;
+      const bx = mt * mt * ox + 2 * mt * t * cx + t * t * dx;
+      const by = mt * mt * oy + 2 * mt * t * cy + t * t * dy;
+      const a  = t < 0.1 ? t / 0.1 : t > 0.8 ? (1 - t) / 0.2 : 1;
+      dot.attr('cx', bx).attr('cy', by).attr('opacity', a * 0.9);
+      if (t < 1) requestAnimationFrame(step);
+      else dot.remove();
+    }
+    requestAnimationFrame(step);
+  }
+
+  arcData.forEach((arc, i) => {
+    const interval = Math.max(550, Math.round(9500 / arc.count));
+    setTimeout(() => {
+      spawnParticle(arc);
+      setInterval(() => spawnParticle(arc), interval);
+    }, Math.random() * interval + i * 75);
+  });
+
+})();
+</script>
+</body>
+</html>
