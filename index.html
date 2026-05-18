@@ -175,7 +175,7 @@ const DATA = {"flows": [{"origin_state": "OTHERS", "origin_city": "Other Regions
         '<div class="leg-icon"><svg width="14" height="14" viewBox="0 0 14 14">' +
           '<circle cx="7" cy="7" r="5" fill="'+c+'" stroke="white" stroke-width="1.8"/>' +
         '</svg></div>' +
-        '<div class="leg-info"><div class="leg-city">'+d.city+'</div><div class="leg-num">'+d.number+'</div></div>' +
+        '<div class="leg-info"><div class="leg-city">'+d.city+'</div></div>' +
         '<div class="leg-cnt">'+d.count+'<br><span class="leg-wt">'+(d.weight*100).toFixed(0)+'% weight</span></div>' +
       '</div>';
     }).join('') +
@@ -207,11 +207,10 @@ const DATA = {"flows": [{"origin_state": "OTHERS", "origin_city": "Other Regions
       }).join('');
     const maxD = Math.max(...destinations.map(d => dC[d.number]||0), 1);
     document.getElementById('t-dest').innerHTML =
-      '<tr><th>Number</th><th>City</th><th>Calls</th><th style="min-width:120px">Weight</th></tr>' +
+      '<tr><th>City</th><th>Calls</th><th style="min-width:120px">Weight</th></tr>' +
       destinations.map(d => {
         const cnt = dC[d.number]||0;
-        return '<tr><td class="mono">'+d.number+'</td>' +
-          '<td><span class="swatch" style="background:'+apCol(d.color)+'"></span>'+d.city+'</td>' +
+        return '<tr><td><span class="swatch" style="background:'+apCol(d.color)+'"></span>'+d.city+'</td>' +
           '<td>'+cnt+'</td>' +
           '<td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:'+(cnt/maxD*100).toFixed(1)+'%;background:'+apCol(d.color)+'88"></div></div>' +
           '<span class="pct">'+(cnt/ft*100).toFixed(1)+'%</span></div></td></tr>';
@@ -352,14 +351,11 @@ const DATA = {"flows": [{"origin_state": "OTHERS", "origin_city": "Other Regions
     destG.append('circle').attr('cx',x).attr('cy',y).attr('r',2.5)
       .attr('fill','white').attr('opacity',.85);
 
-    // Labels
+    // Label — city name only
     const east = x > W * .55, lx = east ? x-13 : x+13, anc = east ? 'end' : 'start';
-    destG.append('text').attr('x',lx).attr('y',y-11)
+    destG.append('text').attr('x',lx).attr('y',y-9)
       .attr('fill','#111').attr('font-size',11).attr('font-family','monospace')
       .attr('font-weight','bold').attr('text-anchor',anc).text(d.city);
-    destG.append('text').attr('x',lx).attr('y',y+1)
-      .attr('fill','#6a8aaa').attr('font-size',8.5).attr('font-family','monospace')
-      .attr('text-anchor',anc).text(d.number);
   });
 
   // ── Particle animation ────────────────────────────────────────────────────
