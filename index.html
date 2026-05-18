@@ -57,13 +57,16 @@
       backdrop-filter: blur(8px); box-shadow: 0 2px 12px rgba(0,0,0,.08); z-index: 10;
     }
     .map-legend h3 { font-size: 9px; text-transform: uppercase; letter-spacing: 2px; color: #7a9ab8; margin-bottom: 11px; padding-bottom: 7px; border-bottom: 1px solid #e6f0f8; }
-    .leg-row { display: flex; align-items: center; gap: 9px; margin-bottom: 9px; }
-    .leg-dot  { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+    .map-legend h3.leg-h2 { margin-top: 12px; }
+    .leg-row  { display: flex; align-items: center; gap: 9px; margin-bottom: 9px; }
+    .leg-icon { width: 14px; text-align: center; flex-shrink: 0; }
     .leg-info { flex: 1; }
     .leg-city { font-size: 12px; color: #1a2a3a; }
     .leg-num  { font-size: 10px; color: #7a9ab8; font-family: monospace; }
     .leg-cnt  { font-size: 11px; color: #5a7a98; text-align: right; }
     .leg-wt   { font-size: 9px; color: #9ab8d0; }
+    .leg-origin-row { display: flex; align-items: center; gap: 9px; }
+    .leg-origin-label { font-size: 11px; color: #4a6a88; }
 
     .origin-hint {
       position: absolute; bottom: 14px; left: 20px;
@@ -164,13 +167,25 @@ const DATA = {"flows": [{"origin_state": "OTHERS", "origin_city": "Other Regions
   states.forEach(s => makeBtn(s.state, s.state, s.count));
 
   // ── Legend ────────────────────────────────────────────────────────────────
-  document.getElementById('leg').innerHTML = destinations.map(d =>
-    '<div class="leg-row">' +
-      '<div class="leg-dot" style="background:'+apCol(d.color)+'"></div>' +
-      '<div class="leg-info"><div class="leg-city">'+d.city+'</div><div class="leg-num">'+d.number+'</div></div>' +
-      '<div class="leg-cnt">'+d.count+'<br><span class="leg-wt">'+(d.weight*100).toFixed(0)+'% weight</span></div>' +
-    '</div>'
-  ).join('');
+  // Answering point legend (circles) + origin legend (triangle)
+  document.getElementById('leg').innerHTML =
+    destinations.map(d => {
+      const c = apCol(d.color);
+      return '<div class="leg-row">' +
+        '<div class="leg-icon"><svg width="14" height="14" viewBox="0 0 14 14">' +
+          '<circle cx="7" cy="7" r="5" fill="'+c+'" stroke="white" stroke-width="1.8"/>' +
+        '</svg></div>' +
+        '<div class="leg-info"><div class="leg-city">'+d.city+'</div><div class="leg-num">'+d.number+'</div></div>' +
+        '<div class="leg-cnt">'+d.count+'<br><span class="leg-wt">'+(d.weight*100).toFixed(0)+'% weight</span></div>' +
+      '</div>';
+    }).join('') +
+    '<h3 class="leg-h2">Call Origins</h3>' +
+    '<div class="leg-origin-row">' +
+      '<div class="leg-icon"><svg width="14" height="14" viewBox="0 0 14 14">' +
+        '<polygon points="7,1 13,13 1,13" fill="#4a7a9a55" stroke="#3a6a8a" stroke-width="1.5" stroke-linejoin="round"/>' +
+      '</svg></div>' +
+      '<span class="leg-origin-label">Origin city — triangle size = call volume</span>' +
+    '</div>';
 
   // ── Stats tables ──────────────────────────────────────────────────────────
   function renderTables(fs) {
@@ -281,41 +296,69 @@ const DATA = {"flows": [{"origin_state": "OTHERS", "origin_city": "Other Regions
     .attr('stroke-width', a => Math.max(.6, Math.min(2, a.count/7)))
     .attr('stroke-dasharray','5 8').attr('stroke-opacity',.22);
 
-  // ── Origin nodes ──────────────────────────────────────────────────────────
+  // ── Origin nodes (triangles ▲) ────────────────────────────────────────────
+  // Upward triangle = call source.  Colour = state colour, muted fill.
   const maxOC = Math.max(...origins.map(o => o.count));
   const origG  = zoomG.append('g');
   const origNodes = origG.selectAll('g.on').data(origins).join('g').attr('class','on');
   origNodes.each(function(o) {
     const p = px(o.lon, o.lat);
     if (!p || isNaN(p[0])) return;
-    const [x,y] = p, r = 4+(o.count/maxOC)*7, sc = STATE_COL[o.state]||'#4a7a9a';
-    d3.select(this).append('circle').attr('cx',x).attr('cy',y).attr('r',r)
-      .attr('fill',sc+'66').attr('stroke',sc).attr('stroke-width',1.3);
-    d3.select(this).append('text').attr('x',x+r+4).attr('y',y+3.5)
-      .attr('fill',sc).attr('font-size',9).attr('font-family','monospace').attr('font-weight','bold')
+    const [x, y] = p;
+    const r  = 5 + (o.count / maxOC) * 9;   // triangle "radius"
+    const sc = STATE_COL[o.state] || '#4a7a9a';
+    // Equilateral triangle centred at (x, y), pointing up
+    const pts = (x+',')+(y-r)+' '+(x+r*.866)+','+(y+r*.5)+' '+(x-r*.866)+','+(y+r*.5);
+    d3.select(this).append('polygon')
+      .attr('points', pts)
+      .attr('fill', sc + '55')
+      .attr('stroke', sc)
+      .attr('stroke-width', 1.6)
+      .attr('stroke-linejoin', 'round');
+    // Label to the right of the triangle's widest point
+    d3.select(this).append('text')
+      .attr('x', x + r*.866 + 5).attr('y', y + 4)
+      .attr('fill', sc)
+      .attr('font-size', 9).attr('font-family', 'monospace').attr('font-weight', 'bold')
       .text(o.city);
   });
 
-  // ── Destination nodes ─────────────────────────────────────────────────────
+  // ── Answering point nodes (circles ●) ────────────────────────────────────
+  // Solid filled circle with white ring + pulsing halo = call destination.
   const destG = zoomG.append('g');
   destinations.forEach(d => {
     const p = px(d.lon, d.lat);
     if (!p || isNaN(p[0])) return;
-    const [x,y] = p, c = apCol(d.color);
-    const ring = destG.append('circle').attr('cx',x).attr('cy',y).attr('fill','none')
-      .attr('stroke',c).attr('stroke-width',1.5).attr('opacity',0);
+    const [x, y] = p, c = apCol(d.color);
+
+    // Pulsing outer halo
+    const ring = destG.append('circle').attr('cx',x).attr('cy',y)
+      .attr('fill','none').attr('stroke',c).attr('stroke-width',1.8).attr('opacity',0);
     (function pulse() {
-      ring.attr('r',8).attr('opacity',.7)
-        .transition().duration(2200).ease(d3.easeExpOut).attr('r',30).attr('opacity',0).on('end',pulse);
+      ring.attr('r',10).attr('opacity',.65)
+        .transition().duration(2400).ease(d3.easeExpOut)
+        .attr('r',34).attr('opacity',0).on('end',pulse);
     })();
-    destG.append('circle').attr('cx',x).attr('cy',y).attr('r',5.5)
-      .attr('fill',c).attr('stroke','white').attr('stroke-width',1.8);
-    const east = x > W*.55, lx = east ? x-10 : x+10, anc = east ? 'end' : 'start';
-    destG.append('text').attr('x',lx).attr('y',y-9)
-      .attr('fill','#1a2a3a').attr('font-size',10).attr('font-family','monospace')
+
+    // White backing halo (makes it pop on the map)
+    destG.append('circle').attr('cx',x).attr('cy',y).attr('r',10)
+      .attr('fill','white').attr('stroke','none').attr('opacity',.7);
+
+    // Solid filled core
+    destG.append('circle').attr('cx',x).attr('cy',y).attr('r',8)
+      .attr('fill',c).attr('stroke','white').attr('stroke-width',2.2);
+
+    // Small inner white dot — "target" look
+    destG.append('circle').attr('cx',x).attr('cy',y).attr('r',2.5)
+      .attr('fill','white').attr('opacity',.85);
+
+    // Labels
+    const east = x > W * .55, lx = east ? x-13 : x+13, anc = east ? 'end' : 'start';
+    destG.append('text').attr('x',lx).attr('y',y-11)
+      .attr('fill','#111').attr('font-size',11).attr('font-family','monospace')
       .attr('font-weight','bold').attr('text-anchor',anc).text(d.city);
-    destG.append('text').attr('x',lx).attr('y',y+2)
-      .attr('fill','#7a9ab8').attr('font-size',8.5).attr('font-family','monospace')
+    destG.append('text').attr('x',lx).attr('y',y+1)
+      .attr('fill','#6a8aaa').attr('font-size',8.5).attr('font-family','monospace')
       .attr('text-anchor',anc).text(d.number);
   });
 
