@@ -17,14 +17,10 @@
       display: flex; align-items: flex-end;
       justify-content: space-between;
       padding: 18px 32px 14px;
-      background: #fff;
-      border-bottom: 1px solid #dce8f2;
+      background: #fff; border-bottom: 1px solid #dce8f2;
       box-shadow: 0 1px 4px rgba(0,0,0,.06);
     }
-    .header h1 {
-      font-size: 19px; font-weight: 400;
-      letter-spacing: 3px; text-transform: uppercase; color: #1a3a58;
-    }
+    .header h1 { font-size: 19px; font-weight: 400; letter-spacing: 3px; text-transform: uppercase; color: #1a3a58; }
     .header .sub { font-size: 11px; color: #7a9ab8; margin-top: 4px; }
     .kpis { display: flex; gap: 28px; }
     .kpi  { text-align: right; }
@@ -34,55 +30,33 @@
     /* ── Filter Bar ─────────────────────────────── */
     .filter-bar {
       display: flex; align-items: center; gap: 8px;
-      padding: 10px 32px;
-      background: #fff;
-      border-bottom: 1px solid #dce8f2;
+      padding: 10px 32px; background: #fff; border-bottom: 1px solid #dce8f2;
     }
-    .filter-label {
-      font-size: 10px; text-transform: uppercase;
-      letter-spacing: 1.5px; color: #9ab8d0; margin-right: 4px; white-space: nowrap;
-    }
+    .filter-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: #9ab8d0; margin-right: 4px; white-space: nowrap; }
     .sf {
-      padding: 5px 14px; border-radius: 20px;
-      border: 1.5px solid #d0e0ee;
-      background: transparent; color: #5a7a98;
-      font-size: 11px; font-weight: 500; cursor: pointer;
-      transition: all .18s; letter-spacing: .5px;
-      white-space: nowrap;
+      padding: 5px 14px; border-radius: 20px; border: 1.5px solid #d0e0ee;
+      background: transparent; color: #5a7a98; font-size: 11px; font-weight: 500;
+      cursor: pointer; transition: all .18s; letter-spacing: .5px; white-space: nowrap;
     }
     .sf:hover { background: #f0f6fc; }
-    .sf.active {
-      color: #fff;
-      border-color: var(--sc);
-      background: var(--sc);
-    }
-    .sf-count {
-      display: inline-block; margin-left: 5px;
-      font-size: 9px; opacity: .75;
-    }
+    .sf.active { color: #fff; border-color: var(--sc); background: var(--sc); }
+    .sf-count  { display: inline-block; margin-left: 5px; font-size: 9px; opacity: .75; }
 
     /* ── Map ────────────────────────────────────── */
     #map-wrap {
       position: relative; width: 100%; height: 580px;
-      background: #d0e4f2; overflow: hidden;
+      background: #cde0f0; overflow: hidden; cursor: default;
     }
     #map-wrap svg { display: block; position: absolute; top: 0; left: 0; }
 
     /* ── Map Legend ─────────────────────────────── */
     .map-legend {
       position: absolute; top: 16px; right: 20px;
-      background: rgba(255,255,255,.93);
-      border: 1px solid #dce8f2; border-radius: 6px;
-      padding: 13px 15px; min-width: 238px;
-      backdrop-filter: blur(8px);
-      box-shadow: 0 2px 12px rgba(0,0,0,.08); z-index: 10;
+      background: rgba(255,255,255,.93); border: 1px solid #dce8f2;
+      border-radius: 6px; padding: 13px 15px; min-width: 238px;
+      backdrop-filter: blur(8px); box-shadow: 0 2px 12px rgba(0,0,0,.08); z-index: 10;
     }
-    .map-legend h3 {
-      font-size: 9px; text-transform: uppercase;
-      letter-spacing: 2px; color: #7a9ab8;
-      margin-bottom: 11px; padding-bottom: 7px;
-      border-bottom: 1px solid #e6f0f8;
-    }
+    .map-legend h3 { font-size: 9px; text-transform: uppercase; letter-spacing: 2px; color: #7a9ab8; margin-bottom: 11px; padding-bottom: 7px; border-bottom: 1px solid #e6f0f8; }
     .leg-row { display: flex; align-items: center; gap: 9px; margin-bottom: 9px; }
     .leg-dot  { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
     .leg-info { flex: 1; }
@@ -94,65 +68,44 @@
     .origin-hint {
       position: absolute; bottom: 14px; left: 20px;
       display: flex; align-items: center; gap: 8px;
-      background: rgba(255,255,255,.88);
-      border: 1px solid #dce8f2; border-radius: 4px;
-      padding: 6px 12px; font-size: 10px; color: #5a7a98;
+      background: rgba(255,255,255,.88); border: 1px solid #dce8f2;
+      border-radius: 4px; padding: 6px 12px; font-size: 10px; color: #5a7a98;
       box-shadow: 0 1px 4px rgba(0,0,0,.06); z-index: 10;
     }
-    .oh-dot {
-      width: 7px; height: 7px; border-radius: 50%;
-      background: #6a9ab8; border: 1px solid #3a6a8a; flex-shrink: 0;
-    }
+    .oh-dot { width: 7px; height: 7px; border-radius: 50%; background: #6a9ab8; border: 1px solid #3a6a8a; flex-shrink: 0; }
 
-    /* active state badge on map */
-    .state-badge {
+    /* zoom-reset button — shown when zoomed in */
+    #zoom-reset {
       position: absolute; bottom: 14px; right: 20px;
-      background: rgba(255,255,255,.93);
-      border: 1.5px solid #dce8f2; border-radius: 4px;
-      padding: 5px 14px; font-size: 12px; font-weight: 500;
-      color: #1a3a58; z-index: 10; display: none;
+      display: none; align-items: center; gap: 6px;
+      background: rgba(255,255,255,.93); border: 1.5px solid #dce8f2;
+      border-radius: 4px; padding: 6px 14px; font-size: 11px; font-weight: 500;
+      color: #1a3a58; cursor: pointer; z-index: 10;
+      box-shadow: 0 1px 4px rgba(0,0,0,.08); transition: background .15s;
     }
+    #zoom-reset:hover { background: #f0f6fc; }
 
     /* ── Stats ──────────────────────────────────── */
-    .stats {
-      display: grid; grid-template-columns: 1fr 1fr;
-      border-top: 1px solid #dce8f2; gap: 1px; background: #dce8f2;
-    }
+    .stats { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid #dce8f2; gap: 1px; background: #dce8f2; }
     .sp { padding: 20px 28px 24px; background: #fff; }
-    .sp h2 {
-      font-size: 9px; text-transform: uppercase;
-      letter-spacing: 2px; color: #7a9ab8; margin-bottom: 14px;
-    }
+    .sp h2 { font-size: 9px; text-transform: uppercase; letter-spacing: 2px; color: #7a9ab8; margin-bottom: 14px; }
     table { width: 100%; border-collapse: collapse; }
-    th {
-      font-size: 9px; text-transform: uppercase;
-      letter-spacing: 1px; color: #9ab8d0; font-weight: 400;
-      padding: 0 8px 8px; text-align: left; border-bottom: 1px solid #e8f2f8;
-    }
-    td {
-      padding: 8px 8px; font-size: 13px; color: #2a4a62;
-      border-bottom: 1px solid #f0f6fc; vertical-align: middle;
-    }
+    th { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; color: #9ab8d0; font-weight: 400; padding: 0 8px 8px; text-align: left; border-bottom: 1px solid #e8f2f8; }
+    td { padding: 8px 8px; font-size: 13px; color: #2a4a62; border-bottom: 1px solid #f0f6fc; vertical-align: middle; }
     tr:last-child td { border-bottom: none; }
-    .bar-wrap  { display: flex; align-items: center; gap: 8px; }
-    .bar-bg    { flex: 1; height: 3px; background: #e0eaf4; border-radius: 2px; overflow: hidden; }
-    .bar-fill  { height: 3px; border-radius: 2px; }
-    .pct       { font-size: 11px; color: #7a9ab8; width: 36px; text-align: right; flex-shrink: 0; }
-    .swatch    { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
-    .mono      { font-family: monospace; font-size: 11px; color: #7a9ab8; }
-    .state-tag {
-      display: inline-block; padding: 1px 6px; border-radius: 10px;
-      font-size: 9px; font-weight: 600; color: #fff; margin-right: 5px; vertical-align: middle;
-    }
+    .bar-wrap { display: flex; align-items: center; gap: 8px; }
+    .bar-bg   { flex: 1; height: 3px; background: #e0eaf4; border-radius: 2px; overflow: hidden; }
+    .bar-fill { height: 3px; border-radius: 2px; }
+    .pct      { font-size: 11px; color: #7a9ab8; width: 36px; text-align: right; flex-shrink: 0; }
+    .swatch   { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+    .mono     { font-family: monospace; font-size: 11px; color: #7a9ab8; }
+    .state-tag { display: inline-block; padding: 1px 6px; border-radius: 10px; font-size: 9px; font-weight: 600; color: #fff; margin-right: 5px; vertical-align: middle; }
   </style>
 </head>
 <body>
 
 <div class="header">
-  <div>
-    <h1>Geographic Call Map</h1>
-    <div class="sub" id="sub">—</div>
-  </div>
+  <div><h1>Geographic Call Map</h1><div class="sub" id="sub">—</div></div>
   <div class="kpis" id="kpis"></div>
 </div>
 
@@ -161,12 +114,9 @@
 </div>
 
 <div id="map-wrap">
-  <div class="map-legend">
-    <h3>Answering Points</h3>
-    <div id="leg"></div>
-  </div>
+  <div class="map-legend"><h3>Answering Points</h3><div id="leg"></div></div>
   <div class="origin-hint"><div class="oh-dot"></div>Origin city · size = call volume</div>
-  <div class="state-badge" id="state-badge"></div>
+  <button id="zoom-reset">&#8722; Reset View</button>
 </div>
 
 <div class="stats">
@@ -183,117 +133,75 @@ const DATA = {"flows": [{"origin_state": "OTHERS", "origin_city": "Other Regions
 (async () => {
   const { flows, origins, destinations, states, total } = DATA;
 
-  // ── Colour helpers ────────────────────────────────────────────────────────
-  // Slightly darker AP colours for readability on light background
-  const AP_DARK = {
-    '#FF6B35': '#d44800',
-    '#FFD166': '#b87e00',
-    '#06D6A0': '#059a72',
-    '#118AB2': '#0a6d92',
-    '#EF476F': '#c82050',
-  };
-  function apCol(c) { return AP_DARK[c] || c; }
+  // ── Colours ───────────────────────────────────────────────────────────────
+  const AP_DARK = { '#FF6B35':'#d44800','#FFD166':'#b87e00','#06D6A0':'#059a72','#118AB2':'#0a6d92','#EF476F':'#c82050' };
+  const apCol = c => AP_DARK[c] || c;
+  const STATE_COL = { NSW:'#c82050', VIC:'#0a6d92', QLD:'#b87e00', SA:'#059a72', WA:'#d44800', TAS:'#6a5a9a', OTHERS:'#5a7a98' };
 
-  const STATE_COL = {
-    NSW: '#c82050', VIC: '#0a6d92', QLD: '#b87e00',
-    SA:  '#059a72', WA:  '#d44800', TAS: '#6a5a9a', OTHERS: '#5a7a98',
-  };
-
-  // ── Header KPIs ───────────────────────────────────────────────────────────
+  // ── Header ────────────────────────────────────────────────────────────────
   document.getElementById('sub').textContent =
     total + ' geographic calls  ·  ' + origins.length + ' origin cities  ·  ' + flows.length + ' routes';
-
   document.getElementById('kpis').innerHTML = [
-    [total,               'Geographic Calls'],
-    [origins.length,      'Origin Cities'],
-    [destinations.length, 'Answering Points'],
-    [flows.length,        'Routes'],
-  ].map(([v, l]) =>
-    '<div class="kpi"><div class="kpi-v">' + v +
-    '</div><div class="kpi-l">' + l + '</div></div>'
-  ).join('');
+    [total,'Geographic Calls'],[origins.length,'Origin Cities'],
+    [destinations.length,'Answering Points'],[flows.length,'Routes'],
+  ].map(([v,l]) => '<div class="kpi"><div class="kpi-v">'+v+'</div><div class="kpi-l">'+l+'</div></div>').join('');
 
-  // ── State Filter Buttons ──────────────────────────────────────────────────
+  // ── State filter buttons ──────────────────────────────────────────────────
   const stateTotals = { ALL: total };
   states.forEach(s => { stateTotals[s.state] = s.count; });
-
   const filterBar = document.getElementById('filter-bar');
 
-  function makeBtn(stateCode, label, count) {
-    const btn = document.createElement('button');
-    btn.className = 'sf' + (stateCode === 'ALL' ? ' active' : '');
-    btn.dataset.state = stateCode;
-    if (stateCode !== 'ALL') btn.style.setProperty('--sc', STATE_COL[stateCode] || '#4a7a9a');
-    else btn.style.setProperty('--sc', '#2a5070');
-    btn.innerHTML = label + '<span class="sf-count">' + count + '</span>';
-    btn.addEventListener('click', () => setFilter(stateCode));
-    filterBar.appendChild(btn);
+  function makeBtn(code, label, count) {
+    const b = document.createElement('button');
+    b.className = 'sf' + (code === 'ALL' ? ' active' : '');
+    b.dataset.state = code;
+    b.style.setProperty('--sc', code === 'ALL' ? '#2a5070' : (STATE_COL[code] || '#4a7a9a'));
+    b.innerHTML = label + '<span class="sf-count">' + count + '</span>';
+    b.addEventListener('click', () => setFilter(code));
+    filterBar.appendChild(b);
   }
-
   makeBtn('ALL', 'All States', total);
   states.forEach(s => makeBtn(s.state, s.state, s.count));
 
   // ── Legend ────────────────────────────────────────────────────────────────
   document.getElementById('leg').innerHTML = destinations.map(d =>
     '<div class="leg-row">' +
-      '<div class="leg-dot" style="background:' + apCol(d.color) + '"></div>' +
-      '<div class="leg-info"><div class="leg-city">' + d.city + '</div>' +
-        '<div class="leg-num">' + d.number + '</div></div>' +
-      '<div class="leg-cnt">' + d.count + '<br><span class="leg-wt">' +
-        (d.weight*100).toFixed(0) + '% weight</span></div>' +
+      '<div class="leg-dot" style="background:'+apCol(d.color)+'"></div>' +
+      '<div class="leg-info"><div class="leg-city">'+d.city+'</div><div class="leg-num">'+d.number+'</div></div>' +
+      '<div class="leg-cnt">'+d.count+'<br><span class="leg-wt">'+(d.weight*100).toFixed(0)+'% weight</span></div>' +
     '</div>'
   ).join('');
 
-  // ── Stats Tables ──────────────────────────────────────────────────────────
-  function renderTables(filterState) {
-    const filtFlows  = filterState === 'ALL' ? flows : flows.filter(f => f.origin_state === filterState);
-    const filtOrigins = filterState === 'ALL' ? origins : origins.filter(o => o.state === filterState);
-
-    // Aggregate dest counts for this filter
-    const dCounts = {};
-    filtFlows.forEach(f => { dCounts[f.dest_number] = (dCounts[f.dest_number] || 0) + f.count; });
-    const filtTotal = filtFlows.reduce((s, f) => s + f.count, 0) || 1;
-
-    // Origins table
-    const maxO = Math.max(...filtOrigins.map(o => o.count), 1);
-    document.getElementById('orig-title').textContent =
-      filterState === 'ALL' ? 'Calls by Origin City' : filterState + ' — Origin Cities';
-
+  // ── Stats tables ──────────────────────────────────────────────────────────
+  function renderTables(fs) {
+    const ff = fs === 'ALL' ? flows : flows.filter(f => f.origin_state === fs);
+    const fo = fs === 'ALL' ? origins : origins.filter(o => o.state === fs);
+    const dC = {}; ff.forEach(f => { dC[f.dest_number] = (dC[f.dest_number]||0) + f.count; });
+    const ft = ff.reduce((s,f) => s+f.count, 0) || 1;
+    const maxO = Math.max(...fo.map(o => o.count), 1);
+    document.getElementById('orig-title').textContent = fs === 'ALL' ? 'Calls by Origin City' : fs + ' — Origin Cities';
     document.getElementById('t-orig').innerHTML =
       '<tr><th>City</th><th>State</th><th>Calls</th><th style="min-width:120px">Share</th></tr>' +
-      filtOrigins.map(o => {
-        const pct = (o.count / filtTotal * 100).toFixed(1);
-        const sc  = STATE_COL[o.state] || '#4a7a9a';
-        return '<tr>' +
-          '<td>' + o.city + '</td>' +
-          '<td><span class="state-tag" style="background:' + sc + '">' + o.state + '</span></td>' +
-          '<td style="font-variant-numeric:tabular-nums">' + o.count + '</td>' +
-          '<td><div class="bar-wrap">' +
-            '<div class="bar-bg"><div class="bar-fill" style="width:' +
-              (o.count/maxO*100).toFixed(1) + '%;background:' + sc + '88"></div></div>' +
-            '<span class="pct">' + pct + '%</span>' +
-          '</div></td></tr>';
+      fo.map(o => {
+        const sc = STATE_COL[o.state]||'#4a7a9a';
+        return '<tr><td>'+o.city+'</td>' +
+          '<td><span class="state-tag" style="background:'+sc+'">'+o.state+'</span></td>' +
+          '<td>'+o.count+'</td>' +
+          '<td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:'+(o.count/maxO*100).toFixed(1)+'%;background:'+sc+'88"></div></div>' +
+          '<span class="pct">'+(o.count/ft*100).toFixed(1)+'%</span></div></td></tr>';
       }).join('');
-
-    // Destinations table
-    const maxD = Math.max(...destinations.map(d => dCounts[d.number] || 0), 1);
+    const maxD = Math.max(...destinations.map(d => dC[d.number]||0), 1);
     document.getElementById('t-dest').innerHTML =
       '<tr><th>Number</th><th>City</th><th>Calls</th><th style="min-width:120px">Weight</th></tr>' +
       destinations.map(d => {
-        const cnt = dCounts[d.number] || 0;
-        const pct = (cnt / filtTotal * 100).toFixed(1);
-        return '<tr>' +
-          '<td class="mono">' + d.number + '</td>' +
-          '<td><span class="swatch" style="background:' + apCol(d.color) + '"></span>' + d.city + '</td>' +
-          '<td style="font-variant-numeric:tabular-nums">' + cnt + '</td>' +
-          '<td><div class="bar-wrap">' +
-            '<div class="bar-bg"><div class="bar-fill" style="width:' +
-              (cnt/maxD*100).toFixed(1) + '%;background:' + apCol(d.color) + '88"></div></div>' +
-            '<span class="pct">' + pct + '%</span>' +
-          '</div></td></tr>';
+        const cnt = dC[d.number]||0;
+        return '<tr><td class="mono">'+d.number+'</td>' +
+          '<td><span class="swatch" style="background:'+apCol(d.color)+'"></span>'+d.city+'</td>' +
+          '<td>'+cnt+'</td>' +
+          '<td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:'+(cnt/maxD*100).toFixed(1)+'%;background:'+apCol(d.color)+'88"></div></div>' +
+          '<span class="pct">'+(cnt/ft*100).toFixed(1)+'%</span></div></td></tr>';
       }).join('');
   }
-
   renderTables('ALL');
 
   // ── Map ───────────────────────────────────────────────────────────────────
@@ -301,10 +209,24 @@ const DATA = {"flows": [{"origin_state": "OTHERS", "origin_city": "Other Regions
   const W = wrap.clientWidth, H = wrap.clientHeight;
 
   const svg = d3.select('#map-wrap').insert('svg', ':first-child')
-    .attr('width', W).attr('height', H);
+    .attr('width', W).attr('height', H)
+    .style('background', '#cde0f0');
 
-  svg.append('rect').attr('width', W).attr('height', H).attr('fill', '#cde0f0');
+  // Single zoom group — everything zoomable goes here
+  const zoomG = svg.append('g').attr('id', 'zoom-group');
 
+  // ── D3 zoom (programmatic only — disable mouse interaction) ──────────────
+  const zoom = d3.zoom()
+    .scaleExtent([1, 10])
+    .on('zoom', e => zoomG.attr('transform', e.transform));
+
+  svg.call(zoom)
+    .on('wheel.zoom',      null)
+    .on('mousedown.zoom',  null)
+    .on('touchstart.zoom', null)
+    .on('dblclick.zoom',   null);
+
+  // ── Base map ──────────────────────────────────────────────────────────────
   let projection;
   try {
     const world = await d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json');
@@ -313,185 +235,182 @@ const DATA = {"flows": [{"origin_state": "OTHERS", "origin_city": "Other Regions
     projection = d3.geoMercator().fitExtent([[50, 28], [W - 265, H - 28]], aus);
     const gp = d3.geoPath().projection(projection);
 
-    svg.append('path').datum(d3.geoGraticule()())
-      .attr('d', gp).attr('fill', 'none')
-      .attr('stroke', '#b8d0e6').attr('stroke-width', .4).attr('opacity', .6);
+    zoomG.append('path').datum(d3.geoGraticule()())
+      .attr('d', gp).attr('fill','none').attr('stroke','#b8d0e6').attr('stroke-width',.4).attr('opacity',.6);
 
-    svg.append('g').selectAll('path').data(ctries.features).join('path')
+    zoomG.append('g').selectAll('path').data(ctries.features).join('path')
       .attr('d', gp)
       .attr('fill', d => +d.id === 36 ? '#e0ecf8' : '#c6d8ea')
       .attr('stroke', d => +d.id === 36 ? '#88aacc' : '#aac0d4')
       .attr('stroke-width', d => +d.id === 36 ? 1.0 : 0.3);
   } catch(e) {
-    projection = d3.geoMercator().center([133.7, -27.5]).scale(W * .80).translate([W * .44, H * .52]);
+    projection = d3.geoMercator().center([133.7,-27.5]).scale(W*.80).translate([W*.44,H*.52]);
   }
 
   const px = (lon, lat) => projection([lon, lat]);
 
-  // ── Compute arc bezier data ───────────────────────────────────────────────
+  // ── Arc bezier data ───────────────────────────────────────────────────────
   const arcData = flows.map(f => {
-    const [ox, oy] = px(f.olon, f.olat);
-    const [dx, dy] = px(f.dlon, f.dlat);
-    const mx = (ox+dx)/2, my = (oy+dy)/2;
+    const [ox,oy] = px(f.olon, f.olat);
+    const [dx,dy] = px(f.dlon, f.dlat);
+    const mx=(ox+dx)/2, my=(oy+dy)/2;
     const dist = Math.hypot(dx-ox, dy-oy) || 1;
-    const off  = Math.min(80, dist * 0.28);
-    const cx   = mx - (dy-oy)/dist * off;
-    const cy   = my + (dx-ox)/dist * off;
+    const off  = Math.min(80, dist*0.28);
+    const cx   = mx - (dy-oy)/dist*off;
+    const cy   = my + (dx-ox)/dist*off;
     const d    = 'M'+ox+','+oy+' Q'+cx+','+cy+' '+dx+','+dy;
     return { ...f, ox, oy, dx, dy, cx, cy, d, c: apCol(f.color) };
   });
 
-  // Measure path lengths
+  // Measure path lengths via hidden SVG
   const msv = document.createElementNS('http://www.w3.org/2000/svg','svg');
   msv.style.cssText = 'position:absolute;visibility:hidden;pointer-events:none';
   document.body.appendChild(msv);
   const msp = document.createElementNS('http://www.w3.org/2000/svg','path');
   msv.appendChild(msp);
-  arcData.forEach(a => { msp.setAttribute('d', a.d); a.pathLen = msp.getTotalLength(); });
+  arcData.forEach(a => { msp.setAttribute('d',a.d); a.pathLen = msp.getTotalLength(); });
   document.body.removeChild(msv);
 
-  // Filter out self-loops (origin ≈ destination, < 25px)
   const drawableArcs = arcData.filter(a => a.pathLen >= 25);
 
-  // ── Background arc paths ──────────────────────────────────────────────────
-  const arcG = svg.append('g');
+  // ── Arc background paths ──────────────────────────────────────────────────
+  const arcG = zoomG.append('g');
   const arcPaths = arcG.selectAll('path').data(drawableArcs).join('path')
-    .attr('d', a => a.d)
-    .attr('fill', 'none')
+    .attr('d', a => a.d).attr('fill','none')
     .attr('stroke', a => a.c)
     .attr('stroke-width', a => Math.max(.6, Math.min(2, a.count/7)))
-    .attr('stroke-dasharray', '5 8')
-    .attr('stroke-opacity', .22);
+    .attr('stroke-dasharray','5 8').attr('stroke-opacity',.22);
 
   // ── Origin nodes ──────────────────────────────────────────────────────────
   const maxOC = Math.max(...origins.map(o => o.count));
-  const origG  = svg.append('g');
-
-  const origNodes = origG.selectAll('g.on').data(origins).join('g').attr('class', 'on');
+  const origG  = zoomG.append('g');
+  const origNodes = origG.selectAll('g.on').data(origins).join('g').attr('class','on');
   origNodes.each(function(o) {
     const p = px(o.lon, o.lat);
     if (!p || isNaN(p[0])) return;
-    const [x, y] = p;
-    const r = 4 + (o.count / maxOC) * 7;
-    const sc = STATE_COL[o.state] || '#4a7a9a';
-
-    d3.select(this).append('circle')
-      .attr('cx', x).attr('cy', y).attr('r', r)
-      .attr('fill', sc + '66')
-      .attr('stroke', sc).attr('stroke-width', 1.3);
-
-    d3.select(this).append('text')
-      .attr('x', x + r + 4).attr('y', y + 3.5)
-      .attr('fill', sc)
-      .attr('font-size', 9).attr('font-family', 'monospace').attr('font-weight', 'bold')
+    const [x,y] = p, r = 4+(o.count/maxOC)*7, sc = STATE_COL[o.state]||'#4a7a9a';
+    d3.select(this).append('circle').attr('cx',x).attr('cy',y).attr('r',r)
+      .attr('fill',sc+'66').attr('stroke',sc).attr('stroke-width',1.3);
+    d3.select(this).append('text').attr('x',x+r+4).attr('y',y+3.5)
+      .attr('fill',sc).attr('font-size',9).attr('font-family','monospace').attr('font-weight','bold')
       .text(o.city);
   });
 
   // ── Destination nodes ─────────────────────────────────────────────────────
-  const destG = svg.append('g');
+  const destG = zoomG.append('g');
   destinations.forEach(d => {
     const p = px(d.lon, d.lat);
     if (!p || isNaN(p[0])) return;
-    const [x, y] = p; const c = apCol(d.color);
-
-    const ring = destG.append('circle')
-      .attr('cx', x).attr('cy', y).attr('fill', 'none')
-      .attr('stroke', c).attr('stroke-width', 1.5).attr('opacity', 0);
+    const [x,y] = p, c = apCol(d.color);
+    const ring = destG.append('circle').attr('cx',x).attr('cy',y).attr('fill','none')
+      .attr('stroke',c).attr('stroke-width',1.5).attr('opacity',0);
     (function pulse() {
-      ring.attr('r', 8).attr('opacity', .7)
-        .transition().duration(2200).ease(d3.easeExpOut)
-        .attr('r', 30).attr('opacity', 0).on('end', pulse);
+      ring.attr('r',8).attr('opacity',.7)
+        .transition().duration(2200).ease(d3.easeExpOut).attr('r',30).attr('opacity',0).on('end',pulse);
     })();
-
-    destG.append('circle').attr('cx', x).attr('cy', y).attr('r', 5.5)
-      .attr('fill', c).attr('stroke', 'white').attr('stroke-width', 1.8);
-
-    const east = x > W * .55;
-    const lx = east ? x - 10 : x + 10;
-    const anc = east ? 'end' : 'start';
-    destG.append('text').attr('x', lx).attr('y', y - 9)
-      .attr('fill', '#1a2a3a').attr('font-size', 10).attr('font-family', 'monospace')
-      .attr('font-weight', 'bold').attr('text-anchor', anc).text(d.city);
-    destG.append('text').attr('x', lx).attr('y', y + 2)
-      .attr('fill', '#7a9ab8').attr('font-size', 8.5).attr('font-family', 'monospace')
-      .attr('text-anchor', anc).text(d.number);
+    destG.append('circle').attr('cx',x).attr('cy',y).attr('r',5.5)
+      .attr('fill',c).attr('stroke','white').attr('stroke-width',1.8);
+    const east = x > W*.55, lx = east ? x-10 : x+10, anc = east ? 'end' : 'start';
+    destG.append('text').attr('x',lx).attr('y',y-9)
+      .attr('fill','#1a2a3a').attr('font-size',10).attr('font-family','monospace')
+      .attr('font-weight','bold').attr('text-anchor',anc).text(d.city);
+    destG.append('text').attr('x',lx).attr('y',y+2)
+      .attr('fill','#7a9ab8').attr('font-size',8.5).attr('font-family','monospace')
+      .attr('text-anchor',anc).text(d.number);
   });
 
-  // ── Particle (travelling line-segment) animation ──────────────────────────
-  const partG = svg.append('g');
+  // ── Particle animation ────────────────────────────────────────────────────
+  const partG = zoomG.append('g');
   let activeState = 'ALL';
 
   function spawnSegment(arc) {
-    const segLen = 52;
-    const total  = arc.pathLen;
-    const dur    = 3800 + Math.random() * 1600;
-
+    const segLen = 52, total2 = arc.pathLen, dur = 3800 + Math.random()*1600;
     const seg = partG.append('path')
-      .attr('d', arc.d)
-      .attr('fill', 'none')
-      .attr('stroke', arc.c)
-      .attr('stroke-width', 2.5)
-      .attr('stroke-linecap', 'round')
-      .attr('stroke-dasharray', segLen + ' ' + (total + segLen))
-      .attr('stroke-dashoffset', 0)
-      .attr('opacity', .9);
-
+      .attr('d',arc.d).attr('fill','none').attr('stroke',arc.c)
+      .attr('stroke-width',2.5).attr('stroke-linecap','round')
+      .attr('stroke-dasharray', segLen+' '+(total2+segLen))
+      .attr('stroke-dashoffset',0).attr('opacity',.9);
     seg.transition().duration(dur).ease(d3.easeLinear)
-      .attr('stroke-dashoffset', -(total + segLen))
+      .attr('stroke-dashoffset',-(total2+segLen))
       .on('end', function() { d3.select(this).remove(); });
   }
 
-  function shouldAnimate(arc) {
-    return activeState === 'ALL' || arc.origin_state === activeState;
-  }
-
-  // Start all intervals — each checks shouldAnimate() before spawning
   drawableArcs.forEach((arc, i) => {
-    const interval = Math.max(1200, Math.round(18000 / arc.count));
+    const interval = Math.max(1200, Math.round(18000/arc.count));
     setTimeout(() => {
-      if (shouldAnimate(arc)) spawnSegment(arc);
-      setInterval(() => { if (shouldAnimate(arc)) spawnSegment(arc); }, interval);
-    }, Math.random() * interval + i * 100);
+      if (activeState === 'ALL' || arc.origin_state === activeState) spawnSegment(arc);
+      setInterval(() => {
+        if (activeState === 'ALL' || arc.origin_state === activeState) spawnSegment(arc);
+      }, interval);
+    }, Math.random()*interval + i*100);
   });
 
-  // ── State filter logic ────────────────────────────────────────────────────
-  const badge = document.getElementById('state-badge');
+  // ── Zoom helpers ──────────────────────────────────────────────────────────
+  const resetBtn = document.getElementById('zoom-reset');
+  resetBtn.addEventListener('click', () => setFilter('ALL'));
 
+  function zoomToAll() {
+    svg.transition().duration(750).ease(d3.easeCubicInOut)
+      .call(zoom.transform, d3.zoomIdentity);
+    resetBtn.style.display = 'none';
+  }
+
+  function zoomToState(state) {
+    // Gather SVG coordinates of all origins in this state
+    const stateOrigins = origins.filter(o => o.state === state);
+    // Also include destination points that this state's flows terminate at
+    const destNums = [...new Set(flows.filter(f => f.origin_state === state).map(f => f.dest_number))];
+    const destPts  = destNums.map(dn => destinations.find(d => d.number === dn)).filter(Boolean);
+
+    const points = [
+      ...stateOrigins.map(o => px(o.lon, o.lat)),
+      ...destPts.map(d => px(d.lon, d.lat)),
+    ].filter(p => p && !isNaN(p[0]));
+
+    if (!points.length) return;
+
+    const xs = points.map(p => p[0]);
+    const ys = points.map(p => p[1]);
+    let x0 = Math.min(...xs), x1 = Math.max(...xs);
+    let y0 = Math.min(...ys), y1 = Math.max(...ys);
+
+    // Enforce a minimum bounding box so single-city states don't over-zoom
+    const minSpan = 120;
+    if (x1 - x0 < minSpan) { const mid = (x0+x1)/2; x0 = mid - minSpan/2; x1 = mid + minSpan/2; }
+    if (y1 - y0 < minSpan) { const mid = (y0+y1)/2; y0 = mid - minSpan/2; y1 = mid + minSpan/2; }
+
+    const pad   = 90;
+    const bW    = x1 - x0 + pad*2;
+    const bH    = y1 - y0 + pad*2;
+    const scale = Math.min(7, 0.88 * Math.min(W/bW, H/bH));
+    const cx    = (x0+x1)/2;
+    const cy    = (y0+y1)/2;
+    const tx    = W/2 - scale*cx;
+    const ty    = H/2 - scale*cy;
+
+    svg.transition().duration(750).ease(d3.easeCubicInOut)
+      .call(zoom.transform, d3.zoomIdentity.translate(tx, ty).scale(scale));
+
+    resetBtn.style.display = 'flex';
+  }
+
+  // ── State filter logic ────────────────────────────────────────────────────
   function setFilter(state) {
     activeState = state;
 
-    // Buttons
     document.querySelectorAll('.sf').forEach(b =>
       b.classList.toggle('active', b.dataset.state === state)
     );
 
-    // Arc path opacity
     arcPaths.transition().duration(250)
-      .attr('stroke-opacity', a =>
-        state === 'ALL' || a.origin_state === state ? .22 : .04
-      );
+      .attr('stroke-opacity', a => state === 'ALL' || a.origin_state === state ? .22 : .04);
 
-    // Origin node opacity
     origNodes.transition().duration(250)
-      .attr('opacity', o =>
-        state === 'ALL' || o.state === state ? 1 : 0.1
-      );
+      .attr('opacity', o => state === 'ALL' || o.state === state ? 1 : 0.1);
 
-    // Remove any in-flight particles from previous filter
     partG.selectAll('path').interrupt().remove();
 
-    // Badge
-    if (state !== 'ALL') {
-      const sc = STATE_COL[state] || '#2a5070';
-      badge.style.display = 'block';
-      badge.style.borderColor = sc;
-      badge.style.color = sc;
-      badge.textContent = state + ' — ' + (stateTotals[state] || 0) + ' calls';
-    } else {
-      badge.style.display = 'none';
-    }
-
-    // Tables
+    state === 'ALL' ? zoomToAll() : zoomToState(state);
     renderTables(state);
   }
 
