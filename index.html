@@ -6,51 +6,50 @@
   <title>Geographic Call Map</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
-      background: #04091a;
-      color: #c8d8e8;
+      background: #f5f8fc;
+      color: #1a2a3a;
       font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
       min-height: 100vh;
     }
 
-    /* ── Header ─────────────────────────────── */
+    /* ── Header ──────────────────────────────── */
     .header {
       display: flex;
       align-items: flex-end;
       justify-content: space-between;
       padding: 18px 32px 14px;
-      background: #020713;
-      border-bottom: 1px solid #0c1e36;
+      background: #ffffff;
+      border-bottom: 1px solid #dde8f0;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
     }
     .header h1 {
       font-size: 20px;
-      font-weight: 300;
-      letter-spacing: 4px;
+      font-weight: 400;
+      letter-spacing: 3px;
       text-transform: uppercase;
-      color: #6aaed8;
+      color: #1a3a58;
     }
     .header .sub {
       font-size: 11px;
-      color: #2a4a6a;
+      color: #7a9ab8;
       margin-top: 4px;
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
     }
-    .kpis {
-      display: flex;
-      gap: 28px;
-    }
-    .kpi { text-align: right; }
+    .kpis { display: flex; gap: 28px; }
+    .kpi  { text-align: right; }
     .kpi-v {
       font-size: 28px;
-      font-weight: 200;
-      color: #6aaed8;
+      font-weight: 300;
+      color: #1a3a58;
       line-height: 1;
     }
     .kpi-l {
       font-size: 9px;
       text-transform: uppercase;
       letter-spacing: 1.5px;
-      color: #2a4a6a;
+      color: #7a9ab8;
       margin-top: 3px;
     }
 
@@ -59,36 +58,32 @@
       position: relative;
       width: 100%;
       height: 590px;
-      background: #02060f;
+      background: #dce8f4;
       overflow: hidden;
     }
-    #map-wrap svg {
-      display: block;
-      position: absolute;
-      top: 0; left: 0;
-    }
+    #map-wrap svg { display: block; position: absolute; top: 0; left: 0; }
 
     /* ── Map legend ──────────────────────────── */
     .map-legend {
       position: absolute;
-      top: 18px;
-      right: 22px;
-      background: rgba(2, 6, 15, 0.90);
-      border: 1px solid #0c1e36;
+      top: 18px; right: 22px;
+      background: rgba(255,255,255,0.94);
+      border: 1px solid #dde8f0;
       border-radius: 6px;
       padding: 14px 16px;
-      min-width: 235px;
-      backdrop-filter: blur(10px);
+      min-width: 240px;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
       z-index: 10;
     }
     .map-legend h3 {
       font-size: 9px;
       text-transform: uppercase;
       letter-spacing: 2px;
-      color: #2a4a6a;
+      color: #7a9ab8;
       margin-bottom: 12px;
       padding-bottom: 8px;
-      border-bottom: 1px solid #0c1e36;
+      border-bottom: 1px solid #e8f0f8;
     }
     .leg-row {
       display: flex;
@@ -96,37 +91,33 @@
       gap: 10px;
       margin-bottom: 9px;
     }
-    .leg-dot {
-      width: 9px; height: 9px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
+    .leg-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
     .leg-info { flex: 1; min-width: 0; }
-    .leg-city { font-size: 12px; color: #b0c8e0; }
-    .leg-num  { font-size: 10px; color: #2a4a6a; font-family: monospace; }
-    .leg-cnt  { font-size: 11px; color: #4a6a88; text-align: right; }
-    .leg-wt   { font-size: 9px;  color: #2a4a6a; }
+    .leg-city { font-size: 12px; color: #1a2a3a; }
+    .leg-num  { font-size: 10px; color: #7a9ab8; font-family: monospace; }
+    .leg-cnt  { font-size: 11px; color: #5a7a98; text-align: right; }
+    .leg-wt   { font-size: 9px; color: #9ab8d0; }
 
     .origin-hint {
       position: absolute;
-      bottom: 16px;
-      left: 22px;
+      bottom: 16px; left: 22px;
       display: flex;
       align-items: center;
       gap: 8px;
-      background: rgba(2, 6, 15, 0.80);
-      border: 1px solid #0c1e36;
+      background: rgba(255,255,255,0.88);
+      border: 1px solid #dde8f0;
       border-radius: 4px;
       padding: 6px 12px;
       font-size: 10px;
-      color: #2a4a6a;
+      color: #5a7a98;
       z-index: 10;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
     }
     .oh-dot {
       width: 7px; height: 7px;
       border-radius: 50%;
-      background: rgba(130, 180, 210, 0.8);
-      border: 1px solid #4a7a9a;
+      background: #6a9ab8;
+      border: 1px solid #3a6a8a;
       flex-shrink: 0;
     }
 
@@ -134,18 +125,19 @@
     .stats {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      border-top: 1px solid #0c1e36;
+      border-top: 1px solid #dde8f0;
+      background: #eaf2f8;
+      gap: 1px;
     }
     .sp {
       padding: 20px 28px 24px;
-      background: #030914;
+      background: #ffffff;
     }
-    .sp:first-child { border-right: 1px solid #0c1e36; }
     .sp h2 {
       font-size: 9px;
       text-transform: uppercase;
       letter-spacing: 2px;
-      color: #2a4a6a;
+      color: #7a9ab8;
       margin-bottom: 14px;
     }
     table { width: 100%; border-collapse: collapse; }
@@ -153,29 +145,29 @@
       font-size: 9px;
       text-transform: uppercase;
       letter-spacing: 1px;
-      color: #1e3a58;
+      color: #9ab8d0;
       font-weight: 400;
       padding: 0 8px 8px;
       text-align: left;
-      border-bottom: 1px solid #081428;
+      border-bottom: 1px solid #e8f0f8;
     }
     td {
       padding: 8px 8px;
       font-size: 13px;
-      color: #a0bcd4;
-      border-bottom: 1px solid #060f1c;
+      color: #2a4a62;
+      border-bottom: 1px solid #f0f5fa;
       vertical-align: middle;
     }
     tr:last-child td { border-bottom: none; }
     .bar-wrap { display: flex; align-items: center; gap: 8px; }
-    .bar-bg { flex: 1; height: 3px; background: #081428; border-radius: 2px; overflow: hidden; }
+    .bar-bg { flex: 1; height: 3px; background: #e0eaf4; border-radius: 2px; overflow: hidden; }
     .bar-fill { height: 3px; border-radius: 2px; }
-    .pct { font-size: 11px; color: #2a4a6a; width: 36px; text-align: right; flex-shrink: 0; }
+    .pct { font-size: 11px; color: #7a9ab8; width: 36px; text-align: right; flex-shrink: 0; }
     .swatch {
-      display: inline-block; width: 7px; height: 7px;
+      display: inline-block; width: 8px; height: 8px;
       border-radius: 50%; margin-right: 6px; vertical-align: middle;
     }
-    .mono { font-family: monospace; font-size: 11px; color: #2a4a6a; }
+    .mono { font-family: monospace; font-size: 11px; color: #7a9ab8; }
   </style>
 </head>
 <body>
@@ -219,33 +211,44 @@ const DATA = {"flows": [{"origin": "NSW", "origin_name": "New South Wales", "ola
 (async () => {
   const { flows, origins, destinations, total } = DATA;
 
-  // Header
+  // Slightly deeper colours that read well on a light map
+  const colourMap = {
+    '#FF6B35': '#d44800',
+    '#FFD166': '#b87e00',
+    '#06D6A0': '#059a72',
+    '#118AB2': '#0a6d92',
+    '#EF476F': '#c82050',
+  };
+  function col(c) { return colourMap[c] || c; }
+
+  // ── Header ──────────────────────────────────────────────────────────
   document.getElementById('sub').textContent =
     total + ' geographic calls  ·  ' + flows.length + ' origin → destination routes';
 
   document.getElementById('kpis').innerHTML = [
-    [total,            'Geographic Calls'],
-    [origins.length,   'Origin States'],
+    [total,               'Geographic Calls'],
+    [origins.length,      'Origin States'],
     [destinations.length, 'Answering Points'],
-    [flows.length,     'Route Pairs'],
+    [flows.length,        'Route Pairs'],
   ].map(([v, l]) =>
     '<div class="kpi"><div class="kpi-v">' + v +
     '</div><div class="kpi-l">' + l + '</div></div>'
   ).join('');
 
-  // Legend
+  // ── Legend ──────────────────────────────────────────────────────────
   document.getElementById('leg').innerHTML = destinations.map(d =>
     '<div class="leg-row">' +
-      '<div class="leg-dot" style="background:' + d.color + ';box-shadow:0 0 6px ' + d.color + '88"></div>' +
+      '<div class="leg-dot" style="background:' + col(d.color) + '"></div>' +
       '<div class="leg-info">' +
         '<div class="leg-city">' + d.city + '</div>' +
         '<div class="leg-num">' + d.number + '</div>' +
       '</div>' +
-      '<div class="leg-cnt">' + d.count + '<br><span class="leg-wt">' + (d.weight * 100).toFixed(0) + '% weight</span></div>' +
+      '<div class="leg-cnt">' + d.count + '<br><span class="leg-wt">' +
+        (d.weight * 100).toFixed(0) + '% weight</span></div>' +
     '</div>'
   ).join('');
 
-  // Origin table
+  // ── Tables ──────────────────────────────────────────────────────────
   const maxO = Math.max(...origins.map(o => o.count));
   document.getElementById('t-orig').innerHTML =
     '<tr><th>State / Region</th><th>Calls</th><th style="min-width:130px">Share</th></tr>' +
@@ -255,28 +258,27 @@ const DATA = {"flows": [{"origin": "NSW", "origin_name": "New South Wales", "ola
         '<td>' + o.name + '</td>' +
         '<td style="font-variant-numeric:tabular-nums">' + o.count + '</td>' +
         '<td><div class="bar-wrap">' +
-          '<div class="bar-bg"><div class="bar-fill" style="width:' + (o.count / maxO * 100).toFixed(1) + '%;background:#1e4878"></div></div>' +
+          '<div class="bar-bg"><div class="bar-fill" style="width:' +
+            (o.count / maxO * 100).toFixed(1) + '%;background:#4a8ab0"></div></div>' +
           '<span class="pct">' + pct + '%</span>' +
-        '</div></td>' +
-      '</tr>';
+        '</div></td></tr>';
     }).join('');
 
-  // Dest table
   document.getElementById('t-dest').innerHTML =
     '<tr><th>Number</th><th>City</th><th>Calls</th><th style="min-width:130px">Weight</th></tr>' +
     destinations.map(d =>
       '<tr>' +
         '<td class="mono">' + d.number + '</td>' +
-        '<td><span class="swatch" style="background:' + d.color + '"></span>' + d.city + '</td>' +
+        '<td><span class="swatch" style="background:' + col(d.color) + '"></span>' + d.city + '</td>' +
         '<td style="font-variant-numeric:tabular-nums">' + d.count + '</td>' +
         '<td><div class="bar-wrap">' +
-          '<div class="bar-bg"><div class="bar-fill" style="width:' + (d.weight * 100).toFixed(0) + '%;background:' + d.color + '66"></div></div>' +
+          '<div class="bar-bg"><div class="bar-fill" style="width:' +
+            (d.weight * 100).toFixed(0) + '%;background:' + col(d.color) + '88"></div></div>' +
           '<span class="pct">' + (d.weight * 100).toFixed(0) + '%</span>' +
-        '</div></td>' +
-      '</tr>'
+        '</div></td></tr>'
     ).join('');
 
-  // ── Map ──────────────────────────────────────────────────────────────
+  // ── Map ─────────────────────────────────────────────────────────────
   const wrap = document.getElementById('map-wrap');
   const W = wrap.clientWidth;
   const H = wrap.clientHeight;
@@ -284,24 +286,9 @@ const DATA = {"flows": [{"origin": "NSW", "origin_name": "New South Wales", "ola
   const svg = d3.select('#map-wrap').insert('svg', ':first-child')
     .attr('width', W).attr('height', H);
 
-  // Defs: glow filters
-  const defs = svg.append('defs');
-  function glowFilter(id, std) {
-    const f = defs.append('filter').attr('id', id)
-      .attr('x', '-100%').attr('y', '-100%')
-      .attr('width', '300%').attr('height', '300%');
-    f.append('feGaussianBlur').attr('in', 'SourceGraphic')
-      .attr('stdDeviation', std).attr('result', 'b');
-    const m = f.append('feMerge');
-    m.append('feMergeNode').attr('in', 'b');
-    m.append('feMergeNode').attr('in', 'SourceGraphic');
-  }
-  glowFilter('gs', 4);
-  glowFilter('gw', 1.8);
+  // Background fill (ocean)
+  svg.append('rect').attr('width', W).attr('height', H).attr('fill', '#d0e4f2');
 
-  svg.append('rect').attr('width', W).attr('height', H).attr('fill', '#02060f');
-
-  // Project helper (set after atlas loads)
   let projection;
 
   try {
@@ -311,28 +298,30 @@ const DATA = {"flows": [{"origin": "NSW", "origin_name": "New South Wales", "ola
     const ctries = topojson.feature(world, world.objects.countries);
     const aus = ctries.features.find(f => +f.id === 36);
 
-    // Fit to Australia, leaving space on right for legend
     projection = d3.geoMercator()
       .fitExtent([[50, 28], [W - 270, H - 28]], aus);
 
     const gp = d3.geoPath().projection(projection);
 
+    // Graticule
     svg.append('path')
       .datum(d3.geoGraticule()())
       .attr('d', gp)
       .attr('fill', 'none')
-      .attr('stroke', '#06101e')
-      .attr('stroke-width', 0.4);
+      .attr('stroke', '#b8d0e8')
+      .attr('stroke-width', 0.4)
+      .attr('opacity', 0.6);
 
+    // Countries
     svg.append('g').selectAll('path')
       .data(ctries.features)
       .join('path')
       .attr('d', gp)
-      .attr('fill', d => +d.id === 36 ? '#0b1d30' : '#060c18')
-      .attr('stroke', d => +d.id === 36 ? '#19365a' : '#08101e')
-      .attr('stroke-width', d => +d.id === 36 ? 0.8 : 0.3);
+      .attr('fill', d => +d.id === 36 ? '#e2eef8' : '#c8dcea')
+      .attr('stroke', d => +d.id === 36 ? '#8aaec8' : '#b0cade')
+      .attr('stroke-width', d => +d.id === 36 ? 1.0 : 0.3);
+
   } catch (err) {
-    // Fallback projection if CDN fails
     projection = d3.geoMercator()
       .center([133.7, -27.5])
       .scale(W * 0.80)
@@ -341,130 +330,152 @@ const DATA = {"flows": [{"origin": "NSW", "origin_name": "New South Wales", "ola
 
   const px = (lon, lat) => projection([lon, lat]);
 
-  // Precompute arc screen coords + bezier control point
+  // Build arc screen-coordinate data
   const arcData = flows.map(f => {
     const [ox, oy] = px(f.olon, f.olat);
     const [dx, dy] = px(f.dlon, f.dlat);
     const mx = (ox + dx) / 2, my = (oy + dy) / 2;
-    const d = Math.hypot(dx - ox, dy - oy) || 1;
-    const offset = Math.min(90, d * 0.28);
-    // Control point perpendicular to chord (curves upward-left)
-    const cx = mx - (dy - oy) / d * offset;
-    const cy = my + (dx - ox) / d * offset;
-    return { ...f, ox, oy, dx, dy, cx, cy };
+    const dist = Math.hypot(dx - ox, dy - oy) || 1;
+    const offset = Math.min(85, dist * 0.28);
+    const cx = mx - (dy - oy) / dist * offset;
+    const cy = my + (dx - ox) / dist * offset;
+    const d = 'M' + ox + ',' + oy + ' Q' + cx + ',' + cy + ' ' + dx + ',' + dy;
+    return { ...f, ox, oy, dx, dy, cx, cy, d, c: col(f.color) };
   });
 
-  // Faint background arc paths
+  // Measure path lengths via a hidden SVG element
+  const measureSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  measureSvg.style.cssText = 'position:absolute;visibility:hidden;pointer-events:none';
+  document.body.appendChild(measureSvg);
+  const measurePath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  measureSvg.appendChild(measurePath);
+  arcData.forEach(a => {
+    measurePath.setAttribute('d', a.d);
+    a.pathLen = measurePath.getTotalLength();
+  });
+  document.body.removeChild(measureSvg);
+
+  // ── Faint background arc paths (dashed) ─────────────────────────────
   const arcG = svg.append('g');
   arcData.forEach(a => {
     arcG.append('path')
-      .attr('d', 'M' + a.ox + ',' + a.oy +
-                 ' Q' + a.cx + ',' + a.cy +
-                 ' ' + a.dx + ',' + a.dy)
+      .attr('d', a.d)
       .attr('fill', 'none')
-      .attr('stroke', a.color)
-      .attr('stroke-width', Math.max(0.5, Math.min(2.2, a.count / 7)))
-      .attr('stroke-opacity', 0.15)
-      .attr('stroke-dasharray', '4 7');
+      .attr('stroke', a.c)
+      .attr('stroke-width', Math.max(0.6, Math.min(2, a.count / 7)))
+      .attr('stroke-opacity', 0.22)
+      .attr('stroke-dasharray', '5 8');
   });
 
-  // Origin nodes
+  // ── Origin nodes ──────────────────────────────────────────────────────
   const maxOC = Math.max(...origins.map(o => o.count));
   const origG = svg.append('g');
   origins.forEach(o => {
     const p = px(o.lon, o.lat);
     if (!p || isNaN(p[0])) return;
     const [x, y] = p;
-    const r = 3.5 + (o.count / maxOC) * 6.5;
+    const r = 4 + (o.count / maxOC) * 7;
+
     origG.append('circle')
       .attr('cx', x).attr('cy', y).attr('r', r)
-      .attr('fill', 'rgba(120, 175, 210, 0.70)')
-      .attr('stroke', '#4a7a9a').attr('stroke-width', 0.8)
-      .style('filter', 'url(#gw)');
+      .attr('fill', 'rgba(90,138,170,0.55)')
+      .attr('stroke', '#3a6a8a')
+      .attr('stroke-width', 1.2);
+
     origG.append('text')
       .attr('x', x + r + 4).attr('y', y + 3.5)
-      .attr('fill', '#4a7a9a')
+      .attr('fill', '#2a5070')
       .attr('font-size', 9).attr('font-family', 'monospace')
       .attr('font-weight', 'bold')
       .text(o.state);
   });
 
-  // Destination nodes with pulse
+  // ── Destination nodes ─────────────────────────────────────────────────
   const destG = svg.append('g');
   destinations.forEach(d => {
     const p = px(d.lon, d.lat);
     if (!p || isNaN(p[0])) return;
     const [x, y] = p;
+    const c = col(d.color);
 
+    // Pulse ring
     const ring = destG.append('circle')
       .attr('cx', x).attr('cy', y)
       .attr('fill', 'none')
-      .attr('stroke', d.color).attr('stroke-width', 1.3)
+      .attr('stroke', c).attr('stroke-width', 1.5)
       .attr('opacity', 0);
-
     (function pulse() {
-      ring.attr('r', 7).attr('opacity', 0.85)
-        .transition().duration(1900).ease(d3.easeExpOut)
-        .attr('r', 28).attr('opacity', 0)
+      ring.attr('r', 8).attr('opacity', 0.7)
+        .transition().duration(2200).ease(d3.easeExpOut)
+        .attr('r', 30).attr('opacity', 0)
         .on('end', pulse);
     })();
 
+    // Core dot with white outline for legibility on light bg
+    destG.append('circle')
+      .attr('cx', x).attr('cy', y).attr('r', 7)
+      .attr('fill', 'white')
+      .attr('stroke', c).attr('stroke-width', 0);
     destG.append('circle')
       .attr('cx', x).attr('cy', y).attr('r', 5.5)
-      .attr('fill', d.color)
-      .style('filter', 'url(#gs)');
+      .attr('fill', c)
+      .attr('stroke', 'white').attr('stroke-width', 1.5);
 
-    // Label (flip anchor for east-coast destinations)
+    // Label
     const east = x > W * 0.55;
-    const lx = east ? x - 9 : x + 9;
+    const lx = east ? x - 11 : x + 11;
     const anchor = east ? 'end' : 'start';
     destG.append('text')
       .attr('x', lx).attr('y', y - 9)
-      .attr('fill', d.color)
+      .attr('fill', '#1a2a3a')
       .attr('font-size', 10).attr('font-family', 'monospace')
-      .attr('text-anchor', anchor).attr('opacity', 0.9)
+      .attr('font-weight', 'bold')
+      .attr('text-anchor', anchor)
       .text(d.city);
     destG.append('text')
       .attr('x', lx).attr('y', y + 2)
-      .attr('fill', d.color)
+      .attr('fill', '#7a9ab8')
       .attr('font-size', 8.5).attr('font-family', 'monospace')
-      .attr('text-anchor', anchor).attr('opacity', 0.45)
+      .attr('text-anchor', anchor)
       .text(d.number);
   });
 
-  // Particle animation
+  // ── Travelling line-segment animation ────────────────────────────────
+  // Each "particle" is a short arc segment using stroke-dashoffset animation.
+  // The segment travels from origin to destination at a slow, readable pace.
   const partG = svg.append('g');
 
-  function spawnParticle(arc) {
-    const dot = partG.append('circle')
-      .attr('r', 2.8)
-      .attr('fill', arc.color)
-      .attr('opacity', 0)
-      .style('filter', 'url(#gs)');
+  function spawnSegment(arc) {
+    const segLen = 52;           // visible segment length in px
+    const total  = arc.pathLen;
+    const dur    = 3800 + Math.random() * 1600;  // 3.8 – 5.4 s
 
-    const t0 = performance.now();
-    const dur = 1050 + Math.random() * 950;
-    const { ox, oy, cx, cy, dx, dy } = arc;
+    // dasharray: [segLen visible] [total+segLen gap] — ensures only one dash visible
+    // dashoffset animates 0 → -(total + segLen): moves dash from start to past-end
+    const seg = partG.append('path')
+      .attr('d', arc.d)
+      .attr('fill', 'none')
+      .attr('stroke', arc.c)
+      .attr('stroke-width', 2.5)
+      .attr('stroke-linecap', 'round')
+      .attr('stroke-dasharray', segLen + ' ' + (total + segLen))
+      .attr('stroke-dashoffset', 0)
+      .attr('opacity', 0.9);
 
-    function step(now) {
-      const t = Math.min((now - t0) / dur, 1);
-      const mt = 1 - t;
-      const bx = mt * mt * ox + 2 * mt * t * cx + t * t * dx;
-      const by = mt * mt * oy + 2 * mt * t * cy + t * t * dy;
-      const a  = t < 0.1 ? t / 0.1 : t > 0.8 ? (1 - t) / 0.2 : 1;
-      dot.attr('cx', bx).attr('cy', by).attr('opacity', a * 0.9);
-      if (t < 1) requestAnimationFrame(step);
-      else dot.remove();
-    }
-    requestAnimationFrame(step);
+    seg.transition()
+      .duration(dur)
+      .ease(d3.easeLinear)
+      .attr('stroke-dashoffset', -(total + segLen))
+      .on('end', function() { d3.select(this).remove(); });
   }
 
+  // Stagger initial spawns; rate proportional to call count
   arcData.forEach((arc, i) => {
-    const interval = Math.max(550, Math.round(9500 / arc.count));
+    const interval = Math.max(1200, Math.round(18000 / arc.count));  // slower cadence
     setTimeout(() => {
-      spawnParticle(arc);
-      setInterval(() => spawnParticle(arc), interval);
-    }, Math.random() * interval + i * 75);
+      spawnSegment(arc);
+      setInterval(() => spawnSegment(arc), interval);
+    }, Math.random() * interval + i * 120);
   });
 
 })();
